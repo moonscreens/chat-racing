@@ -57,11 +57,10 @@ function draw() {
 	for (let index = Math.ceil(canvas.height / inversePixelRatio); index >= horizonStart; index--) {
 		const c = roadCanvases[tempRoadTick];
 
-		let width = c.width;
-
-		width *= 1 - ((horizonStart / index) - 0.5);
-
 		let y = index * inversePixelRatio;
+		let width = c.width;
+		width *= y / canvas.height;
+
 		let x = Math.sin((y / canvas.height) * 4 + Date.now() / 1000) * roadWidth;
 		ctx.drawImage(c, Math.round(canvas.width / 2 - width / 2) + x, y, width, c.height);
 
