@@ -1,3 +1,5 @@
+import generateCloud from './cloud';
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
@@ -28,6 +30,17 @@ function getSinY (y) {
 
 let lastFrame = Date.now();
 
+const clouds = [];
+const cloudLifespan = 20;
+setInterval(()=>{
+	clouds.push({
+		t: 0,
+		x: Math.round(canvas.width * Math.random()),
+		y: 0,
+		canvas: generateCloud(80, 40),
+	})
+}, 2000);
+
 const roadTickSlow = 3;
 let roadTick = 0;
 function draw() {
@@ -38,6 +51,16 @@ function draw() {
 
 	ctx.fillStyle = '#87CEEB';
 	ctx.fillRect(0, 0, canvas.width, horizonStart);
+
+	for (let index = clouds.length-1; index >= 0; index--) {
+		const cloud = clouds[index];
+		ctx.drawImage(cloud.canvas, cloud.x, (horizonStart + cloud.canvas.height) * (1 - cloud.t / cloudLifespan) - cloud.canvas.height);
+		cloud.t += delta;
+		if (cloud.t >= cloudLifespan) {
+			clouds.splice(index, 1);
+		}
+	}
+
 	ctx.fillStyle = '#FFE877';
 	ctx.fillRect(0, horizonStart, canvas.width, canvas.height);
 
@@ -55,7 +78,7 @@ function draw() {
 			Math.round((canvas.width / 2 - width / 2) + x),
 			index,
 			Math.round(width),
-			2
+			1
 		)
 
 		tempRoadTick++;
