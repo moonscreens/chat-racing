@@ -2,7 +2,6 @@ import generateCloud from './cloud';
 
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
 
 let horizonStart = null;
 const roadSegments = 5;
@@ -24,7 +23,7 @@ ctx.drawRoad = (segment, x, y, w, h) => {
 }
 
 
-function getSinY (y) {
+function getSinY(y) {
 	return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
 }
 
@@ -32,7 +31,7 @@ let lastFrame = Date.now();
 
 const clouds = [];
 const cloudLifespan = 20;
-setInterval(()=>{
+setInterval(() => {
 	clouds.push({
 		t: 0,
 		x: Math.round(canvas.width * Math.random()),
@@ -52,9 +51,16 @@ function draw() {
 	ctx.fillStyle = '#87CEEB';
 	ctx.fillRect(0, 0, canvas.width, horizonStart);
 
-	for (let index = clouds.length-1; index >= 0; index--) {
+	for (let index = clouds.length - 1; index >= 0; index--) {
 		const cloud = clouds[index];
-		ctx.drawImage(cloud.canvas, cloud.x, (horizonStart + cloud.canvas.height) * (1 - cloud.t / cloudLifespan) - cloud.canvas.height);
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(
+			cloud.canvas,
+			cloud.x,
+			(horizonStart + cloud.canvas.height) * (1 - cloud.t / cloudLifespan) - cloud.canvas.height,
+			cloud.canvas.width * (cloud.t / cloudLifespan),
+			cloud.canvas.height * (cloud.t / cloudLifespan),
+		);
 		cloud.t += delta;
 		if (cloud.t >= cloudLifespan) {
 			clouds.splice(index, 1);
@@ -95,6 +101,7 @@ function resize() {
 	horizonStart = Math.round(canvas.height / 2);
 
 	roadWidth = Math.floor(Math.min(canvas.width, canvas.height) * 0.75);
+	ctx.imageSmoothingEnabled = false;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
