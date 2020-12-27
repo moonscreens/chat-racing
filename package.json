@@ -1,0 +1,26 @@
+{
+	"name": "chat-racing",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "parcel build src/index.html",
+		"start": "parcel src/index.html"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CalebBabin/chat-racing.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/CalebBabin/chat-racing/issues"
+	},
+	"homepage": "https://github.com/CalebBabin/chat-racing#readme",
+	"dependencies": {
+		"js": "^0.1.0",
+		"parcel": "^1.12.4",
+		"sass": "^1.30.0"
+	}
+}
