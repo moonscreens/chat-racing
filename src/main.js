@@ -2,40 +2,29 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
+let horizonStart = null;
+const roadSegments = 5;
+let roadWidth = null;
 
-const inversePixelRatio = 15;
-let horizonStart = 0;
-
-let roadWidth = 10;
-
-const roadCanvases = [];
-const roadCtx = [];
-for (let index = 0; index < 5; index++) {
-	roadCanvases[index] = document.createElement('canvas');
-	roadCtx[index] = roadCanvases[index].getContext('2d');
-}
-
-function generateRoads() {
-	for (let index = 0; index < roadCanvases.length; index++) {
-		const canvas = roadCanvases[index];
-		canvas.width = roadWidth * inversePixelRatio;
-		canvas.height = 1 * inversePixelRatio;
-
-		const ctx = roadCtx[index];
-		ctx.fillStyle = '#000';
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.drawRoad = (segment, x, y, w, h) => {
+	ctx.fillStyle = '#000';
+	ctx.fillRect(x, y, w, h);
+	ctx.fillStyle = '#fff';
+	if (segment < Math.floor(roadSegments / 2)) {
+		ctx.fillRect(Math.round(x + w / 2), y, 1, h);
+		ctx.fillStyle = '#f00';
+	} else {
 		ctx.fillStyle = '#fff';
-		if (index < Math.floor(roadCanvases.length / 2)) {
-			ctx.fillRect(Math.round(canvas.width / 2), 0, inversePixelRatio, inversePixelRatio);
-			ctx.fillStyle = '#f00';
-		} else {
-			ctx.fillStyle = '#fff';
-		}
-		ctx.fillRect(0, 0, inversePixelRatio, inversePixelRatio);
-		ctx.fillRect(canvas.width - inversePixelRatio, 0, inversePixelRatio, inversePixelRatio);
 	}
+	ctx.fillRect(x, y, 1, h);
+	ctx.fillRect(x + w - 1, y, 1, h);
+
 }
 
+
+function getSinY (y) {
+	return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
+}
 
 let lastFrame = Date.now();
 
@@ -48,37 +37,41 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	ctx.fillStyle = '#87CEEB';
-	ctx.fillRect(0, 0, canvas.width, horizonStart * inversePixelRatio);
-	ctx.fillStyle = '#00ff00';
-	ctx.fillRect(0, horizonStart * inversePixelRatio, canvas.width, canvas.height);
+	ctx.fillRect(0, 0, canvas.width, horizonStart);
+	ctx.fillStyle = '#FFE877';
+	ctx.fillRect(0, horizonStart, canvas.width, canvas.height);
 
 
 	let tempRoadTick = Math.floor(roadTick / roadTickSlow);
-	for (let index = Math.ceil(canvas.height / inversePixelRatio); index >= horizonStart; index--) {
-		const c = roadCanvases[tempRoadTick];
+	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
 
-		let y = index * inversePixelRatio;
-		let width = c.width;
+		let y = index;
+		let width = roadWidth;
 		width *= y / canvas.height;
 
-		let x = Math.sin((y / canvas.height) * 4 + Date.now() / 1000) * roadWidth;
-		ctx.drawImage(c, Math.round(canvas.width / 2 - width / 2) + x, y, width, c.height);
+		let x = getSinY(y) * 10;
+		ctx.drawRoad(
+			tempRoadTick,
+			Math.round((canvas.width / 2 - width / 2) + x),
+			index,
+			Math.round(width),
+			2
+		)
 
 		tempRoadTick++;
-		if (tempRoadTick >= roadCanvases.length) tempRoadTick = 0;
+		if (tempRoadTick >= roadSegments) tempRoadTick = 0;
 	}
 
 	roadTick++;
-	if (roadTick >= roadCanvases.length * roadTickSlow) roadTick = 0;
+	if (roadTick >= roadSegments * roadTickSlow) roadTick = 0;
 }
 
 function resize() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	horizonStart = Math.round(canvas.height / 2 / inversePixelRatio);
+	canvas.width = Math.round(window.innerWidth / 8);
+	canvas.height = Math.round(window.innerHeight / 8);
+	horizonStart = Math.round(canvas.height / 2);
 
-	roadWidth = Math.floor(Math.min(canvas.width, canvas.height) * 0.75 / inversePixelRatio);
-	generateRoads();
+	roadWidth = Math.floor(Math.min(canvas.width, canvas.height) * 0.75);
 }
 
 window.addEventListener("DOMContentLoaded", () => {

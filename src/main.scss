@@ -9,4 +9,6 @@ canvas {
     left: 0;
     overflow: hidden;
     position: absolute;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
