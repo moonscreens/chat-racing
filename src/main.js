@@ -4,7 +4,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 let horizonStart = null;
-const roadSegments = 5;
+const roadSegments = 20;
 let roadWidth = null;
 
 ctx.drawRoad = (segment, x, y, w, h) => {
@@ -38,7 +38,7 @@ setInterval(() => {
 		y: 0,
 		canvas: generateCloud(80, 40),
 	})
-}, 1000);
+}, 500);
 
 const roadTickSlow = 3;
 let roadTick = 0;
@@ -60,15 +60,17 @@ function draw() {
 	for (let index = clouds.length - 1; index >= 0; index--) {
 		const cloud = clouds[index];
 		ctx.imageSmoothingEnabled = false;
+		const p = (cloud.t / cloudLifespan);
 
-		const width = Math.round(cloud.canvas.width * (cloud.t / cloudLifespan));
-		const height = Math.round(cloud.canvas.height * (cloud.t / cloudLifespan));
+		const sizeMult = p*p*0.75 + 0.25;
+		const width = Math.round(cloud.canvas.width * sizeMult);
+		const height = Math.round(cloud.canvas.height * sizeMult);
 
 		let offset = canvas.width / 4;
 		if (cloud.x < canvas.width/2) {
 			offset *= -1;
 		}
-		offset *= (cloud.t / cloudLifespan);
+		offset *= p;
 
 		ctx.drawImage(
 			cloud.canvas,
@@ -98,7 +100,7 @@ function draw() {
 
 		let y = index;
 		let width = roadWidth;
-		width *= y / canvas.height;
+		width *= (y / canvas.height) * (y / canvas.height);
 
 		let x = getSinY(y) * 10;
 		ctx.drawRoad(

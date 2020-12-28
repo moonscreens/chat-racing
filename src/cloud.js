@@ -10,29 +10,21 @@ function shader(src, type, gl, pid) {
 		console.log(src.split('\n')[temp - 1]);
 	}
 	gl.attachShader(pid, sid);
-	console.log(pid, sid)
 	return sid;
 }
 
-export default function generateCloud(width, height) {
-	const canvas = document.createElement('canvas');
-	canvas.width = width;
-	canvas.height = height;
+const globalCanvas = document.createElement('canvas');
+const gl = globalCanvas.getContext('webgl2', { antialias: false }) || globalCanvas.getContext('experimental-webgl2', { antialias: false });
 
-
-	const gl = canvas.getContext('webgl2', { antialias: false }) || canvas.getContext('experimental-webgl2', { antialias: false });
-	const h = gl.drawingBufferHeight;
-	const w = gl.drawingBufferWidth;
-
-	const pid = gl.createProgram();
-	const vertexShaderID = shader(`#version 300 es
+const pid = gl.createProgram();
+const vertexShaderID = shader(`#version 300 es
 		in vec2 coords;
 
 		void main(void) {
 			gl_Position = vec4(coords.xy, 0.0, 1.0);
 		}
 	`, gl.VERTEX_SHADER, gl, pid);
-	const fragmentShaderID = shader(`#version 300 es
+const fragmentShaderID = shader(`#version 300 es
 	#define W0 0x3504f335u
 	#define W1 0x8fc1ecd5u
 	#define M 741103597u
@@ -116,17 +108,21 @@ export default function generateCloud(width, height) {
 		fragColor = outputVec;
 	}`, gl.FRAGMENT_SHADER, gl, pid);
 
-	gl.linkProgram(pid);
-	console.error('ERROR validating program!', gl.getProgramInfoLog(pid));
+gl.linkProgram(pid);
 
-	if (window.location.hostname.match(/localhost/)) {
-		gl.validateProgram(pid);
-		if (!gl.getProgramParameter(pid, gl.VALIDATE_STATUS)) {
-			console.error('ERROR validating program!', gl.getProgramInfoLog(pid));
-			console.error(gl.getShaderInfoLog(vertexShaderID));
-			console.error(gl.getShaderInfoLog(fragmentShaderID));
-		}
+if (window.location.hostname.match(/localhost/)) {
+	gl.validateProgram(pid);
+	if (!gl.getProgramParameter(pid, gl.VALIDATE_STATUS)) {
+		console.error('ERROR validating program!', gl.getProgramInfoLog(pid));
+		console.error(gl.getShaderInfoLog(vertexShaderID));
+		console.error(gl.getShaderInfoLog(fragmentShaderID));
 	}
+}
+function fillMe(canvas) {
+	globalCanvas.width = canvas.width;
+	globalCanvas.height = canvas.height;
+	const h = gl.drawingBufferHeight;
+	const w = gl.drawingBufferWidth;
 
 	let array = new Float32Array([-1, 3, -1, -1, 3, -1]);
 	gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -150,6 +146,16 @@ export default function generateCloud(width, height) {
 	gl.uniform1f(heightLocation, h);
 
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+	canvas.getContext('2d').drawImage(globalCanvas, 0, 0);
+}
+
+export default function generateCloud(width, height) {
+	const canvas = document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+
+	fillMe(canvas);
 
 	return canvas;
 }
