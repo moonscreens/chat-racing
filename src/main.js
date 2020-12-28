@@ -19,7 +19,17 @@ ctx.drawRoad = (segment, x, y, w, h) => {
 	}
 	ctx.fillRect(x, y, 1, h);
 	ctx.fillRect(x + w - 1, y, 1, h);
+}
 
+function getScale(y) {
+	let scale = 0;
+	if (y > horizonStart) {
+		scale = (y - horizonStart) / (canvas.height - horizonStart);
+	} else if (y < horizonStart) {
+		scale = 1 - y / horizonStart;
+	}
+
+	return Math.min(1, Math.max(0, scale));
 }
 
 
@@ -62,25 +72,28 @@ function draw() {
 		ctx.imageSmoothingEnabled = false;
 		const p = (cloud.t / cloudLifespan);
 
-		const sizeMult = p*p*0.75 + 0.25;
+
+		let y = horizonStart * (1 - p*p);
+
+		const sizeMult = getScale(y);
 		const width = Math.round(cloud.canvas.width * sizeMult);
 		const height = Math.round(cloud.canvas.height * sizeMult);
 
 		let offset = canvas.width / 4;
-		if (cloud.x < canvas.width/2) {
+		if (cloud.x < canvas.width / 2) {
 			offset *= -1;
 		}
 		offset *= p;
 
 		ctx.drawImage(
 			cloud.canvas,
-			Math.round(cloud.x + offset - width/2),
-			(horizonStart + cloud.canvas.height) * (1 - cloud.t / cloudLifespan) - cloud.canvas.height,
+			Math.round(cloud.x - width / 2),
+			y,
 			width,
 			height,
 		);
 		cloud.t += delta;
-		if (cloud.t >= cloudLifespan) {
+		if (cloud.t >= cloudLifespan * 1.5) {
 			clouds.splice(index, 1);
 		}
 	}
@@ -100,7 +113,7 @@ function draw() {
 
 		let y = index;
 		let width = roadWidth;
-		width *= (y / canvas.height) * (y / canvas.height);
+		width *= getScale(y);
 
 		let x = getSinY(y) * 10;
 		ctx.drawRoad(
@@ -122,7 +135,9 @@ function draw() {
 function resize() {
 	canvas.width = Math.round(window.innerWidth / 8);
 	canvas.height = Math.round(window.innerHeight / 8);
-	horizonStart = Math.round(canvas.height / 2);
+	horizonStart = Math.round(canvas.height * 0.65);
+
+	console.log(getScale(0), getScale(horizonStart - 1), getScale(horizonStart), getScale(horizonStart + 1), getScale(canvas.height))
 
 	roadWidth = Math.floor(Math.min(canvas.width, canvas.height) * 0.75);
 	ctx.imageSmoothingEnabled = false;
