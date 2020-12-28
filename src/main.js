@@ -30,7 +30,7 @@ function getSinY(y) {
 let lastFrame = Date.now();
 
 const clouds = [];
-const cloudLifespan = 20;
+const cloudLifespan = 15;
 setInterval(() => {
 	clouds.push({
 		t: 0,
@@ -38,7 +38,7 @@ setInterval(() => {
 		y: 0,
 		canvas: generateCloud(80, 40),
 	})
-}, 2000);
+}, 1000);
 
 const roadTickSlow = 3;
 let roadTick = 0;
@@ -48,18 +48,34 @@ function draw() {
 	lastFrame = Date.now();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+	/*
+		Draw sky
+	*/
 	ctx.fillStyle = '#87CEEB';
 	ctx.fillRect(0, 0, canvas.width, horizonStart);
 
+	/*
+		Draw clouds
+	*/
 	for (let index = clouds.length - 1; index >= 0; index--) {
 		const cloud = clouds[index];
 		ctx.imageSmoothingEnabled = false;
+
+		const width = Math.round(cloud.canvas.width * (cloud.t / cloudLifespan));
+		const height = Math.round(cloud.canvas.height * (cloud.t / cloudLifespan));
+
+		let offset = canvas.width / 4;
+		if (cloud.x < canvas.width/2) {
+			offset *= -1;
+		}
+		offset *= (cloud.t / cloudLifespan);
+
 		ctx.drawImage(
 			cloud.canvas,
-			cloud.x,
+			Math.round(cloud.x + offset - width/2),
 			(horizonStart + cloud.canvas.height) * (1 - cloud.t / cloudLifespan) - cloud.canvas.height,
-			cloud.canvas.width * (cloud.t / cloudLifespan),
-			cloud.canvas.height * (cloud.t / cloudLifespan),
+			width,
+			height,
 		);
 		cloud.t += delta;
 		if (cloud.t >= cloudLifespan) {
@@ -67,10 +83,16 @@ function draw() {
 		}
 	}
 
+	/*
+		Draw ground
+	*/
 	ctx.fillStyle = '#FFE877';
 	ctx.fillRect(0, horizonStart, canvas.width, canvas.height);
 
 
+	/*
+		Draw road
+	*/
 	let tempRoadTick = Math.floor(roadTick / roadTickSlow);
 	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
 
