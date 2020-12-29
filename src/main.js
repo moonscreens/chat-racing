@@ -291,9 +291,10 @@ function draw() {
 	car.last_y = carY;
 }
 
+const inversePixelRatio = 4;
 function resize() {
-	canvas.width = Math.round(window.innerWidth / 4);
-	canvas.height = Math.round(window.innerHeight / 4);
+	canvas.width = Math.round(Math.min(1920, window.innerWidth) / inversePixelRatio);
+	canvas.height = Math.round(Math.min(1080, window.innerHeight) / inversePixelRatio);
 	horizonStart = Math.round(canvas.height * 0.65);
 	groundHeight = canvas.height - horizonStart;
 
