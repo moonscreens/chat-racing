@@ -106,7 +106,7 @@ const EasingFunctions = {
 }
 
 
-let sinProfile = 2;
+let sinProfile = 4;
 let sinStart = Date.now();
 let sinLength = 20000;
 let sinDate = 1;
@@ -282,16 +282,15 @@ function draw() {
 	const carY = canvas.height - (carImage.height + 5);
 	const carX = getX(carY, car.x);
 	let image = carImage;
-	const carUpX = getX(carY - 5, car.x);
-	const carDirection = carUpX - carX;
-	if (carDirection < -0.5) {
-		image = carImageDrift;
-	}
-	if (carDirection > 0.5) {
+	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight/10, 0);
+	if (roadDirection < -0.5) {
 		image = carImageDriftFlipped;
 	}
-	car.x += (delta * carDirection) * (car.x * car.x * .8 + .2);
-	car.x = Math.max(-1, Math.min(1, car.x));
+	if (roadDirection > 0.5) {
+		image = carImageDrift;
+	}
+	car.x += (delta * roadDirection) * (1 - car.x * car.x * .9 + .1);
+	//car.x = Math.max(-1, Math.min(1, car.x));
 
 	if (car.x > 0) car.x -= delta * (car.x * car.x);
 	if (car.x < 0) car.x += delta * (car.x * car.x);
