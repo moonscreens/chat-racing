@@ -41,11 +41,29 @@ function getScale(y) {
 		scale = 1 - y / horizonStart;
 	}
 
-	return Math.min(1, Math.max(0, scale));
+	return scale;
+}
+
+function getX(y, x) {
+	const scale = 0.15 + getScale(y) * 0.85;
+	const sin = getSinY(y);
+	
+	const center = canvas.width / 2 + sin * roadWidth / 10;
+
+	return center + x * scale * roadWidth / 2;
+}
+function getXSky(y, x) {
+	const scale = 1 - getScale(y) * 0.8 + 0.2;
+	const sin = getSinY(y);
+
+	const center = canvas.width / 2 + sin * roadWidth / 10;
+
+	return center + x * scale * roadWidth / 2;
 }
 
 
 function getSinY(y) {
+	//return 0;
 	return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
 }
 
@@ -54,16 +72,15 @@ let lastFrame = Date.now();
 const clouds = [];
 const cloudLifespan = 15;
 setInterval(() => {
-	const scale = Math.random()*2 + 1;
+	const scale = Math.random() * 2 + 0.5;
 	clouds.push({
 		t: 0,
-		x: Math.round(canvas.width * Math.random()),
+		x: Math.random() * 2 - 1,
 		y: 0,
 		canvas: generateCloud(Math.round(80 * scale), Math.round(40 * scale)),
 	})
-}, 500);
+}, 250);
 
-const roadTickSlow = 3;
 let roadTick = 0;
 function draw() {
 	requestAnimationFrame(draw);
@@ -100,7 +117,7 @@ function draw() {
 
 		ctx.drawImage(
 			cloud.canvas,
-			Math.round(cloud.x - width / 2),
+			Math.round(canvas.width/2 + (cloud.x * roadWidth * (sizeMult*0.5+0.5)) - width / 2),
 			y - height,
 			width,
 			height,
@@ -123,12 +140,12 @@ function draw() {
 	*/
 	let tempRoadTick = roadTick;
 	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
-
+		const scale = getScale(y);
 		let y = index;
 		let width = roadWidth;
-		width *= 0.15 + getScale(y) * 0.85;
+		width *= 0.15 + scale * 0.85;
 
-		let x = getSinY(y) * 10;
+		let x = getSinY(y) * roadWidth / 10;
 		ctx.drawRoad(
 			tempRoadTick,
 			Math.round((canvas.width / 2 - width / 2) + x),
@@ -137,7 +154,7 @@ function draw() {
 			1
 		)
 
-		let tickScale = 1 - getScale(y);
+		let tickScale = 1 - scale;
 		tickScale *= tickScale
 		tempRoadTick += tickScale;
 		while (tempRoadTick >= roadSegments) tempRoadTick = 0;
@@ -156,18 +173,21 @@ function draw() {
 
 		let y = horizonStart + ((p * p) * groundHeight);
 
-		let size = (getScale(y) * 0.85 + 0.15) * 28;
+		let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
 		for (let i = 0; i < element.emotes.length; i++) {
 			const emote = element.emotes[i];
 			ctx.drawImage(
 				emote.material.canvas,
-				Math.round((element.position.x - size/2) + (getSinY(y) * size) + size * i),
+				Math.round(
+					getX(y, element.position.x)
+					+ (size * i) - 
+					(element.emotes.length == 1 ? size / 2 : size * element.emotes.length / 2)),
 				Math.round(y - size),
 				Math.round(size),
 				Math.round(size)
 			);
 		}
-		element.life += delta/1.5;
+		element.life += delta / 1.5;
 		if (element.life > 1.5) {
 			pendingEmoteArray.splice(index, 1);
 		}
@@ -175,8 +195,8 @@ function draw() {
 }
 
 function resize() {
-	canvas.width = Math.round(window.innerWidth / 6);
-	canvas.height = Math.round(window.innerHeight / 6);
+	canvas.width = Math.round(window.innerWidth / 4);
+	canvas.height = Math.round(window.innerHeight / 4);
 	horizonStart = Math.round(canvas.height * 0.65);
 	groundHeight = canvas.height - horizonStart;
 
@@ -212,7 +232,7 @@ const ChatInstance = new Chat({
 const pendingEmoteArray = [];
 ChatInstance.on("emotes", (e) => {
 	const output = {
-		position: { x: canvas.width/2 + (Math.random()-0.5)*roadWidth/3 },
+		position: { x: (Math.random() - 0.5) * 2 },
 		emotes: [],
 		life: 0,
 	};
