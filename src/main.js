@@ -276,12 +276,26 @@ function draw() {
 		}
 	}
 
+	/*
+		Draw car
+	*/
 	const carY = canvas.height - (carImage.height + 5);
 	const carX = getX(carY, car.x);
 	let image = carImage;
-	const carUpX = getX(carY - 2, car.x);
-	if (carUpX < carX - 1) image = carImageDrift;
-	if (carUpX > carX + 1) image = carImageDriftFlipped;
+	const carUpX = getX(carY - 5, car.x);
+	const carDirection = carUpX - carX;
+	if (Math.round(carDirection) < 0) {
+		image = carImageDrift;
+	}
+	if (Math.round(carDirection) > 1) {
+		image = carImageDriftFlipped;
+	}
+	car.x += (delta * carDirection) * (car.x * car.x * .8 + .2);
+	car.x = Math.max(-1, Math.min(1, car.x));
+
+	if (car.x > 0) car.x -= delta * (car.x * car.x);
+	if (car.x < 0) car.x += delta * (car.x * car.x);
+
 	ctx.drawImage(
 		image,
 		Math.round(carX - carImage.width / 2),
