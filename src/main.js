@@ -355,12 +355,12 @@ function draw() {
 
 	const passiveBounce = Math.sin(Date.now() / 50) * 0.6;
 	const collisionProgress = Date.now() - car.collision;
-	const collisionBounce = collisionProgress < 250 ? Math.sin(Date.now() / 20) * 4 : 0;
+	const collisionBounce = collisionProgress < 250 ? Math.sin(Date.now() / 20) * 2 : 0;
 
 	ctx.drawImage(
 		image,
 		Math.round(carX - carImage.width / 2),
-		Math.round(carY + Math.max(passiveBounce, collisionBounce))
+		Math.round(carY + passiveBounce - collisionBounce)
 	);
 	car.last_x = carX;
 	car.last_y = carY;
