@@ -284,10 +284,10 @@ function draw() {
 	let image = carImage;
 	const carUpX = getX(carY - 5, car.x);
 	const carDirection = carUpX - carX;
-	if (Math.round(carDirection) < 0) {
+	if (carDirection < -0.5) {
 		image = carImageDrift;
 	}
-	if (Math.round(carDirection) > 1) {
+	if (carDirection > 0.5) {
 		image = carImageDriftFlipped;
 	}
 	car.x += (delta * carDirection) * (car.x * car.x * .8 + .2);
