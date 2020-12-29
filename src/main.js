@@ -17,6 +17,28 @@ const roadSegments = 6;
 const roadPaintWidth = 2;
 let roadWidth = null;
 
+const carImage = new Image();
+carImage.src = require('./ae86.png');
+
+const carImageDriftFlipped = document.createElement('canvas');
+
+const carImageDrift = new Image();
+carImageDrift.addEventListener('load', () => {
+	carImageDriftFlipped.width = carImageDrift.width;
+	carImageDriftFlipped.height = carImageDrift.height;
+	const ctx = carImageDriftFlipped.getContext('2d');
+	ctx.scale(-1, 1);
+	ctx.drawImage(carImageDrift, -carImageDrift.width, 0);
+})
+carImageDrift.src = require('./ae86_drift.png');
+
+const car = {
+	x: 0,
+	y: 0,
+	last_x: 0,
+	last_y: 0,
+}
+
 ctx.drawRoad = (segment, x, y, w, h) => {
 	if (segment < Math.floor(roadSegments / 2)) {
 		ctx.fillStyle = pallet.road;
@@ -52,14 +74,7 @@ function getX(y, x) {
 
 	return center + x * scale * roadWidth / 2;
 }
-function getXSky(y, x) {
-	const scale = 1 - getScale(y) * 0.8 + 0.2;
-	const sin = getSinY(y);
 
-	const center = canvas.width / 2 + sin * roadWidth / 10;
-
-	return center + x * scale * roadWidth / 2;
-}
 
 const EasingFunctions = {
 	// no easing, no acceleration
@@ -236,15 +251,19 @@ function draw() {
 		const p = element.life;
 
 		let y = horizonStart + ((p * p) * groundHeight);
+		let x = getX(y, element.position.x);
+
+		element.pxpos.x = x;
+		element.pxpos.y = y;
 
 		let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
+
 		for (let i = 0; i < element.emotes.length; i++) {
 			const emote = element.emotes[i];
 			ctx.drawImage(
 				emote.material.canvas,
 				Math.round(
-					getX(y, element.position.x)
-					+ (size * i) -
+					x + (size * i) -
 					(size * element.emotes.length / 2)),
 				Math.round(y - size),
 				Math.round(size),
@@ -256,6 +275,20 @@ function draw() {
 			pendingEmoteArray.splice(index, 1);
 		}
 	}
+
+	const carY = canvas.height - (carImage.height + 5);
+	const carX = getX(carY, car.x);
+	let image = carImage;
+	const carUpX = getX(carY - 2, car.x);
+	if (carUpX < carX - 1) image = carImageDrift;
+	if (carUpX > carX + 1) image = carImageDriftFlipped;
+	ctx.drawImage(
+		image,
+		Math.round(carX - carImage.width / 2),
+		Math.round(carY + Math.sin(Date.now() / 50) * 0.6)
+	);
+	car.last_x = carX;
+	car.last_y = carY;
 }
 
 function resize() {
@@ -297,6 +330,7 @@ const pendingEmoteArray = [];
 ChatInstance.on("emotes", (e) => {
 	const output = {
 		position: { x: (Math.random() - 0.5) * 2 },
+		pxpos: { x: 0, y: 0 },
 		emotes: [],
 		life: 0,
 	};
