@@ -322,8 +322,9 @@ if (query_vars.channels) {
 
 const ChatInstance = new Chat({
 	channels,
-	duplicateEmoteLimit: 1,
+	duplicateEmoteLimit: 0,
 	duplicateEmoteLimit_pleb: 0,
+	maximumEmoteLimit: 3,
 	maximumEmoteLimit_pleb: 1,
 })
 
