@@ -275,12 +275,25 @@ function draw() {
 		ctx.save();
 		ctx.translate(x, y);
 		if (element.dying) {
+			let dieP = (Date.now() - element.dying) / 1000;
+			let fadeOut = 1;
+			if (dieP > 1) {
+				dieP = 2 - dieP;
+				fadeOut = dieP;
+			}
+			dieP = EasingFunctions.easeOutCubic(dieP);
+
 			ctx.globalAlpha = 0.5;
 			ctx.drawImage(bloodSplatter, -size / 2, -size / 2, size, size)
 			ctx.globalAlpha = 1;
 
-			ctx.rotate(Math.PI / 2);
-			ctx.scale(0.5, 0.5);
+			if (element.flying) {
+				ctx.globalAlpha = fadeOut;
+				ctx.translate(0, -groundHeight * (dieP) * 2);
+			} else {
+				ctx.rotate(Math.PI / 2);
+				ctx.scale(0.5, 0.5);
+			}
 		}
 
 		for (let i = 0; i < element.emotes.length; i++) {
@@ -296,13 +309,15 @@ function draw() {
 			);
 		}
 		element.life += delta / 1.5;
-		if (element.life > 1.5) {
+		if (element.life > 2) {
 			pendingEmoteArray.splice(index, 1);
 		} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
 			element.dying = Date.now();
 			car.collision = Date.now();
+			element.flying = Math.floor(Math.random() * 10) === 0;
 		}
 		ctx.restore();
+		ctx.globalAlpha = 1;
 	}
 
 	/*
