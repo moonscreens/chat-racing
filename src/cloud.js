@@ -97,7 +97,7 @@ const fragmentShaderID = shader(`#version 300 es
 		float other = cloud_noise((fragCoord - light_dir.xy) / vec2(width, height), freq, 0., mod(u_time / morph_time, 1.0));
 		float brightness = mix(0.8, 1.0, ceil(other - cloud_height));
 		
-		vec3 sky = vec3(0.1, 0.5, 0.9);
+		vec3 sky = vec3(0.3529, 0.8588, 1.0);
 		
 		cloud_height = min(ceil(max(cloud_height, 0.0)), 1.0);
 		

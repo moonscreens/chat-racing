@@ -1,24 +1,33 @@
 import generateCloud from './cloud';
 
+const pallet = {
+	road: '#373A43',
+	road2: '#424651',
+	roadPaint: '#FFFFFF',
+	roadPaint2: '#373A43',
+}
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 let horizonStart = null;
-const roadSegments = 20;
+const roadSegments = 6;
+const roadPaintWidth = 2;
 let roadWidth = null;
 
 ctx.drawRoad = (segment, x, y, w, h) => {
-	ctx.fillStyle = '#000';
-	ctx.fillRect(x, y, w, h);
-	ctx.fillStyle = '#fff';
 	if (segment < Math.floor(roadSegments / 2)) {
-		ctx.fillRect(Math.round(x + w / 2), y, 1, h);
-		ctx.fillStyle = '#f00';
+		ctx.fillStyle = pallet.road;
+		ctx.fillRect(x, y, w, h);
+		ctx.fillStyle = pallet.roadPaint;
+		ctx.fillRect(Math.floor(x + w / 2), y, roadPaintWidth, h);
+		ctx.fillStyle = pallet.roadPaint2;
 	} else {
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = pallet.road2;
+		ctx.fillRect(x, y, w, h);
+		ctx.fillStyle = pallet.roadPaint;
 	}
-	ctx.fillRect(x, y, 1, h);
-	ctx.fillRect(x + w - 1, y, 1, h);
+	ctx.fillRect(x, y, roadPaintWidth, h);
+	ctx.fillRect(x + w - roadPaintWidth, y, roadPaintWidth, h);
 }
 
 function getScale(y) {
@@ -61,7 +70,7 @@ function draw() {
 	/*
 		Draw sky
 	*/
-	ctx.fillStyle = '#87CEEB';
+	ctx.fillStyle = '#5ADBFF';
 	ctx.fillRect(0, 0, canvas.width, horizonStart);
 
 	/*
@@ -73,7 +82,7 @@ function draw() {
 		const p = (cloud.t / cloudLifespan);
 
 
-		let y = horizonStart * (1 - p*p);
+		let y = horizonStart * (1 - p * p);
 
 		const sizeMult = getScale(y);
 		const width = Math.round(cloud.canvas.width * sizeMult);
@@ -101,19 +110,19 @@ function draw() {
 	/*
 		Draw ground
 	*/
-	ctx.fillStyle = '#FFE877';
+	ctx.fillStyle = '#F6F5AE';
 	ctx.fillRect(0, horizonStart, canvas.width, canvas.height);
 
 
 	/*
 		Draw road
 	*/
-	let tempRoadTick = Math.floor(roadTick / roadTickSlow);
+	let tempRoadTick = roadTick;
 	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
 
 		let y = index;
 		let width = roadWidth;
-		width *= getScale(y);
+		width *= 0.15 + getScale(y) * 0.85;
 
 		let x = getSinY(y) * 10;
 		ctx.drawRoad(
@@ -124,22 +133,24 @@ function draw() {
 			1
 		)
 
-		tempRoadTick++;
-		if (tempRoadTick >= roadSegments) tempRoadTick = 0;
+		let tickScale = 1 - getScale(y);
+		tickScale *= tickScale
+		tempRoadTick += tickScale;
+		while (tempRoadTick >= roadSegments) tempRoadTick = 0;
 	}
 
-	roadTick++;
-	if (roadTick >= roadSegments * roadTickSlow) roadTick = 0;
+	roadTick += 0.25;
+	while (roadTick >= roadSegments) roadTick = 0;
 }
 
 function resize() {
-	canvas.width = Math.round(window.innerWidth / 8);
-	canvas.height = Math.round(window.innerHeight / 8);
+	canvas.width = Math.round(window.innerWidth / 6);
+	canvas.height = Math.round(window.innerHeight / 6);
 	horizonStart = Math.round(canvas.height * 0.65);
 
 	console.log(getScale(0), getScale(horizonStart - 1), getScale(horizonStart), getScale(horizonStart + 1), getScale(canvas.height))
 
-	roadWidth = Math.floor(Math.min(canvas.width, canvas.height) * 0.75);
+	roadWidth = Math.floor(canvas.width * 0.75);
 	ctx.imageSmoothingEnabled = false;
 }
 
