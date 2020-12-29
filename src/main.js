@@ -65,35 +65,35 @@ const EasingFunctions = {
 	// no easing, no acceleration
 	linear: t => t,
 	// accelerating from zero velocity
-	easeInQuad: t => t*t,
+	easeInQuad: t => t * t,
 	// decelerating to zero velocity
-	easeOutQuad: t => t*(2-t),
+	easeOutQuad: t => t * (2 - t),
 	// acceleration until halfway, then deceleration
-	easeInOutQuad: t => t<.5 ? 2*t*t : -1+(4-2*t)*t,
+	easeInOutQuad: t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
 	// accelerating from zero velocity 
-	easeInCubic: t => t*t*t,
+	easeInCubic: t => t * t * t,
 	// decelerating to zero velocity 
-	easeOutCubic: t => (--t)*t*t+1,
+	easeOutCubic: t => (--t) * t * t + 1,
 	// acceleration until halfway, then deceleration 
-	easeInOutCubic: t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1,
+	easeInOutCubic: t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
 	// accelerating from zero velocity 
-	easeInQuart: t => t*t*t*t,
+	easeInQuart: t => t * t * t * t,
 	// decelerating to zero velocity 
-	easeOutQuart: t => 1-(--t)*t*t*t,
+	easeOutQuart: t => 1 - (--t) * t * t * t,
 	// acceleration until halfway, then deceleration
-	easeInOutQuart: t => t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t,
+	easeInOutQuart: t => t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
 	// accelerating from zero velocity
-	easeInQuint: t => t*t*t*t*t,
+	easeInQuint: t => t * t * t * t * t,
 	// decelerating to zero velocity
-	easeOutQuint: t => 1+(--t)*t*t*t*t,
+	easeOutQuint: t => 1 + (--t) * t * t * t * t,
 	// acceleration until halfway, then deceleration 
-	easeInOutQuint: t => t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t
+	easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 }
 
 
 let sinProfile = 2;
 let sinStart = Date.now();
-let sinLength = 10000;
+let sinLength = 20000;
 let sinDate = 1;
 let sinOptions = 5;
 function getSinY(y) {
@@ -109,18 +109,18 @@ function getSinY(y) {
 	if (sinProfile === 0) { // straight road
 		return 0;
 	} else if (sinProfile === 1) { // curvy road (left)
-		let sin1 = Math.sin(p * p * 4 + sinp / 5);
-		let sin2 = Math.sin(EasingFunctions.easeInOutCubic(sinp) * Math.PI);
+		let sin1 = Math.sin(p * p * 4 + Date.now() / 500);
+		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 2) { // curvy road (right)
-		let sin1 = Math.sin(p * p * 4 + sinp / 5);
-		let sin2 = Math.sin(EasingFunctions.easeInOutCubic(sinp) * -Math.PI);
+		let sin1 = Math.sin(p * p * 4 + Date.now() / 500);
+		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * -Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 3) { // Turning road (right)
-		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * 3;
+		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * 4;
 		return sin1;
 	} else if (sinProfile === 4) { // Turning road (left)
-		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * -3;
+		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * -4;
 		return sin1;
 	}
 }
@@ -207,21 +207,20 @@ function draw() {
 	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
 		const scale = getScale(y);
 		let y = index;
-		let width = roadWidth;
-		width *= 0.15 + scale * 0.85;
 
-		let x = getSinY(y) * roadWidth / 10;
+		let x = getX(y, 0);
+		let size = roadWidth * (getScale(y) * 0.85 + 0.15);
+
 		ctx.drawRoad(
 			tempRoadTick,
-			Math.round((canvas.width / 2 - width / 2) + x),
+			Math.round(x - size / 2),
 			index,
-			Math.round(width),
+			Math.round(size),
 			1
 		)
 
 		let tickScale = 1 - scale;
-		tickScale *= tickScale
-		tempRoadTick += tickScale;
+		tempRoadTick += tickScale * tickScale;
 		while (tempRoadTick >= roadSegments) tempRoadTick = 0;
 	}
 
@@ -246,7 +245,7 @@ function draw() {
 				Math.round(
 					getX(y, element.position.x)
 					+ (size * i) -
-					(element.emotes.length == 1 ? size / 2 : size * element.emotes.length / 2)),
+					(size * element.emotes.length / 2)),
 				Math.round(y - size),
 				Math.round(size),
 				Math.round(size)
