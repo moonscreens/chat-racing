@@ -47,7 +47,7 @@ function getScale(y) {
 function getX(y, x) {
 	const scale = 0.15 + getScale(y) * 0.85;
 	const sin = getSinY(y);
-	
+
 	const center = canvas.width / 2 + sin * roadWidth / 10;
 
 	return center + x * scale * roadWidth / 2;
@@ -61,10 +61,68 @@ function getXSky(y, x) {
 	return center + x * scale * roadWidth / 2;
 }
 
+const EasingFunctions = {
+	// no easing, no acceleration
+	linear: t => t,
+	// accelerating from zero velocity
+	easeInQuad: t => t*t,
+	// decelerating to zero velocity
+	easeOutQuad: t => t*(2-t),
+	// acceleration until halfway, then deceleration
+	easeInOutQuad: t => t<.5 ? 2*t*t : -1+(4-2*t)*t,
+	// accelerating from zero velocity 
+	easeInCubic: t => t*t*t,
+	// decelerating to zero velocity 
+	easeOutCubic: t => (--t)*t*t+1,
+	// acceleration until halfway, then deceleration 
+	easeInOutCubic: t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1,
+	// accelerating from zero velocity 
+	easeInQuart: t => t*t*t*t,
+	// decelerating to zero velocity 
+	easeOutQuart: t => 1-(--t)*t*t*t,
+	// acceleration until halfway, then deceleration
+	easeInOutQuart: t => t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t,
+	// accelerating from zero velocity
+	easeInQuint: t => t*t*t*t*t,
+	// decelerating to zero velocity
+	easeOutQuint: t => 1+(--t)*t*t*t*t,
+	// acceleration until halfway, then deceleration 
+	easeInOutQuint: t => t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t
+}
 
+
+let sinProfile = 2;
+let sinStart = Date.now();
+let sinLength = 10000;
+let sinDate = 1;
+let sinOptions = 5;
 function getSinY(y) {
 	//return 0;
-	return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
+	//return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
+	let sinp = sinDate;
+	if (sinDate >= sinLength / 2) {
+		sinp = sinLength / 2 - (sinDate - sinLength / 2)
+	}
+	sinp /= sinLength / 2;
+	const p = 1 - (y - horizonStart) / groundHeight;
+
+	if (sinProfile === 0) { // straight road
+		return 0;
+	} else if (sinProfile === 1) { // curvy road (left)
+		let sin1 = Math.sin(p * p * 4 + sinp / 5);
+		let sin2 = Math.sin(EasingFunctions.easeInOutCubic(sinp) * Math.PI);
+		return sin1 * sin2;
+	} else if (sinProfile === 2) { // curvy road (right)
+		let sin1 = Math.sin(p * p * 4 + sinp / 5);
+		let sin2 = Math.sin(EasingFunctions.easeInOutCubic(sinp) * -Math.PI);
+		return sin1 * sin2;
+	} else if (sinProfile === 3) { // Turning road (right)
+		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * 3;
+		return sin1;
+	} else if (sinProfile === 4) { // Turning road (left)
+		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * -3;
+		return sin1;
+	}
 }
 
 let lastFrame = Date.now();
@@ -87,6 +145,13 @@ function draw() {
 	const delta = (Date.now() - lastFrame) / 1000;
 	lastFrame = Date.now();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	sinDate = Date.now() - sinStart;
+	if (sinDate >= sinLength) {
+		sinStart = Date.now();
+		sinDate = 0;
+		sinProfile = Math.floor(Math.random() * sinOptions);
+	}
 
 	/*
 		Draw sky
@@ -117,7 +182,7 @@ function draw() {
 
 		ctx.drawImage(
 			cloud.canvas,
-			Math.round(canvas.width/2 + (cloud.x * roadWidth * (sizeMult*0.5+0.5)) - width / 2),
+			Math.round(canvas.width / 2 + (cloud.x * roadWidth * (sizeMult * 0.5 + 0.5)) - width / 2),
 			y - height,
 			width,
 			height,
@@ -180,7 +245,7 @@ function draw() {
 				emote.material.canvas,
 				Math.round(
 					getX(y, element.position.x)
-					+ (size * i) - 
+					+ (size * i) -
 					(element.emotes.length == 1 ? size / 2 : size * element.emotes.length / 2)),
 				Math.round(y - size),
 				Math.round(size),
