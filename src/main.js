@@ -69,6 +69,65 @@ ctx.drawRoad = (segment, x, y, w, h) => {
 	ctx.fillRect(x + w - roadPaintWidth, y, roadPaintWidth, h);
 }
 
+
+ctx.drawEmote = (delta, element, index) => {
+	const p = element.life;
+	let y = horizonStart + ((p * p) * groundHeight);
+	let x = getX(y, element.position.x);
+
+	element.pxpos.x = x;
+	element.pxpos.y = y;
+
+	let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
+
+	ctx.save();
+	ctx.translate(x, y);
+	if (element.dying) {
+		let dieP = (Date.now() - element.dying) / 1000;
+		let fadeOut = 1;
+		if (dieP > 1) {
+			dieP = 2 - dieP;
+			fadeOut = dieP;
+		}
+		dieP = EasingFunctions.easeOutCubic(dieP);
+
+		ctx.globalAlpha = 0.5;
+		ctx.drawImage(bloodSplatter, -size / 2, -size / 2, size, size)
+		ctx.globalAlpha = 1;
+
+		if (element.flying) {
+			ctx.globalAlpha = fadeOut;
+			ctx.translate(0, -groundHeight * (dieP) * 2);
+		} else {
+			ctx.rotate(Math.PI / 2);
+			ctx.scale(0.5, 0.5);
+		}
+	}
+
+	for (let i = 0; i < element.emotes.length; i++) {
+		const emote = element.emotes[i];
+		ctx.drawImage(
+			emote.material.canvas,
+			Math.round(
+				(size * i) -
+				(size * element.emotes.length / 2)),
+			Math.round(-size),
+			Math.round(size),
+			Math.round(size)
+		);
+	}
+	element.life += delta / 1.5;
+	if (element.life > 2) {
+		pendingEmoteArray.splice(index, 1);
+	} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
+		element.dying = Date.now();
+		car.collision = Date.now();
+		element.flying = Math.floor(Math.random() * 10) === 0;
+	}
+	ctx.restore();
+	ctx.globalAlpha = 1;
+}
+
 function getScale(y) {
 	let scale = 0;
 	if (y > horizonStart) {
@@ -257,67 +316,19 @@ function draw() {
 	while (roadTick >= roadSegments) roadTick = 0;
 
 	/*
-		Draw emotes
+		Draw distant emotes
 	*/
 
+	let foregroundEmoteIndex = pendingEmoteArray.length - 1;
 	for (let index = pendingEmoteArray.length - 1; index >= 0; index--) {
 		const element = pendingEmoteArray[index];
-		const p = element.life;
-
-		let y = horizonStart + ((p * p) * groundHeight);
-		let x = getX(y, element.position.x);
-
-		element.pxpos.x = x;
-		element.pxpos.y = y;
-
-		let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
-
-		ctx.save();
-		ctx.translate(x, y);
-		if (element.dying) {
-			let dieP = (Date.now() - element.dying) / 1000;
-			let fadeOut = 1;
-			if (dieP > 1) {
-				dieP = 2 - dieP;
-				fadeOut = dieP;
-			}
-			dieP = EasingFunctions.easeOutCubic(dieP);
-
-			ctx.globalAlpha = 0.5;
-			ctx.drawImage(bloodSplatter, -size / 2, -size / 2, size, size)
-			ctx.globalAlpha = 1;
-
-			if (element.flying) {
-				ctx.globalAlpha = fadeOut;
-				ctx.translate(0, -groundHeight * (dieP) * 2);
-			} else {
-				ctx.rotate(Math.PI / 2);
-				ctx.scale(0.5, 0.5);
-			}
+		if (element.pxpos.y < car.last_y + carImage.height) {
+			ctx.drawEmote(delta, element, index);
+		} else {
+			foregroundEmoteIndex = index;
+			break;
 		}
-
-		for (let i = 0; i < element.emotes.length; i++) {
-			const emote = element.emotes[i];
-			ctx.drawImage(
-				emote.material.canvas,
-				Math.round(
-					(size * i) -
-					(size * element.emotes.length / 2)),
-				Math.round(-size),
-				Math.round(size),
-				Math.round(size)
-			);
-		}
-		element.life += delta / 1.5;
-		if (element.life > 2) {
-			pendingEmoteArray.splice(index, 1);
-		} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
-			element.dying = Date.now();
-			car.collision = Date.now();
-			element.flying = Math.floor(Math.random() * 10) === 0;
-		}
-		ctx.restore();
-		ctx.globalAlpha = 1;
+		foregroundEmoteIndex = -1;
 	}
 
 	/*
@@ -350,6 +361,14 @@ function draw() {
 	);
 	car.last_x = carX;
 	car.last_y = carY;
+	
+	/*
+		Draw close emotes
+	*/
+	for (let index = foregroundEmoteIndex; index >= 0; index--) {
+		const element = pendingEmoteArray[index];
+		ctx.drawEmote(delta, element, index);
+	}
 }
 
 const inversePixelRatio = 4;
