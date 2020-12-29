@@ -17,6 +17,9 @@ const roadSegments = 6;
 const roadPaintWidth = 2;
 let roadWidth = null;
 
+const bloodSplatter = new Image();
+bloodSplatter.src = require('./blood-splatter.png');
+
 const carImage = new Image();
 carImage.src = require('./ae86.png');
 
@@ -37,6 +40,17 @@ const car = {
 	y: 0,
 	last_x: 0,
 	last_y: 0,
+	collision: 0,
+}
+
+function carCollision(x, y) {
+	const halfx = carImage.width / 1.75;
+	const halfy = carImage.height / 2;
+	return (
+		(x < car.last_x + halfx && x > car.last_x - halfx)
+		&&
+		(y < car.last_y + halfy && y > car.last_y - halfy)
+	)
 }
 
 ctx.drawRoad = (segment, x, y, w, h) => {
@@ -258,14 +272,25 @@ function draw() {
 
 		let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
 
+		ctx.save();
+		ctx.translate(x, y);
+		if (element.dying) {
+			ctx.globalAlpha = 0.5;
+			ctx.drawImage(bloodSplatter, -size / 2, -size / 2, size, size)
+			ctx.globalAlpha = 1;
+
+			ctx.rotate(Math.PI / 2);
+			ctx.scale(0.5, 0.5);
+		}
+
 		for (let i = 0; i < element.emotes.length; i++) {
 			const emote = element.emotes[i];
 			ctx.drawImage(
 				emote.material.canvas,
 				Math.round(
-					x + (size * i) -
+					(size * i) -
 					(size * element.emotes.length / 2)),
-				Math.round(y - size),
+				Math.round(-size),
 				Math.round(size),
 				Math.round(size)
 			);
@@ -273,7 +298,11 @@ function draw() {
 		element.life += delta / 1.5;
 		if (element.life > 1.5) {
 			pendingEmoteArray.splice(index, 1);
+		} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
+			element.dying = Date.now();
+			car.collision = Date.now();
 		}
+		ctx.restore();
 	}
 
 	/*
@@ -282,7 +311,7 @@ function draw() {
 	const carY = canvas.height - (carImage.height + 5);
 	const carX = getX(carY, car.x);
 	let image = carImage;
-	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight/10, 0);
+	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight / 10, 0);
 	if (roadDirection < -0.5) {
 		image = carImageDriftFlipped;
 	}
@@ -295,10 +324,14 @@ function draw() {
 	if (car.x > 0) car.x -= delta * (car.x * car.x);
 	if (car.x < 0) car.x += delta * (car.x * car.x);
 
+	const passiveBounce = Math.sin(Date.now() / 50) * 0.6;
+	const collisionProgress = Date.now() - car.collision;
+	const collisionBounce = collisionProgress < 250 ? Math.sin(Date.now() / 20) * 4 : 0;
+
 	ctx.drawImage(
 		image,
 		Math.round(carX - carImage.width / 2),
-		Math.round(carY + Math.sin(Date.now() / 50) * 0.6)
+		Math.round(carY + Math.max(passiveBounce, collisionBounce))
 	);
 	car.last_x = carX;
 	car.last_y = carY;
