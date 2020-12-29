@@ -324,7 +324,7 @@ const ChatInstance = new Chat({
 	channels,
 	duplicateEmoteLimit: 0,
 	duplicateEmoteLimit_pleb: 0,
-	maximumEmoteLimit: 3,
+	maximumEmoteLimit: 2,
 	maximumEmoteLimit_pleb: 1,
 })
 
