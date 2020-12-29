@@ -11,11 +11,14 @@ const pallet = {
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-let horizonStart = null;
-let groundHeight = null;
-const roadSegments = 6;
-const roadPaintWidth = 2;
-let roadWidth = null;
+const inversePixelRatio = 4; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
+const roadSegments = 6; // How long the stripes of paint are
+const roadPaintWidth = 3; // How wide the stripes of paint are
+const flyingRarity = 20; // The higher the number, the less often emotes will fly off the windshield
+
+let roadWidth = null; // set in resize function
+let horizonStart = null; // set in resize function
+let groundHeight = null; // set in resize function
 
 const bloodSplatter = new Image();
 bloodSplatter.src = require('./blood-splatter.png');
@@ -122,7 +125,7 @@ ctx.drawEmote = (delta, element, index) => {
 	} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
 		element.dying = Date.now();
 		car.collision = Date.now();
-		element.flying = Math.floor(Math.random() * 10) === 0;
+		element.flying = Math.floor(Math.random() * flyingRarity) === 0;
 	}
 	ctx.restore();
 	ctx.globalAlpha = 1;
@@ -179,11 +182,11 @@ const EasingFunctions = {
 }
 
 
-let sinProfile = 4;
 let sinStart = Date.now();
-let sinLength = 20000;
+let sinLength = 20000; // How long each road profile lasts for, 20000 = 20 seconds
 let sinDate = 1;
-let sinOptions = 5;
+let sinOptions = 5; // The number of types of road profiles
+let sinProfile = Math.floor(Math.random() * sinOptions); // The default starting profile
 function getSinY(y) {
 	//return 0;
 	//return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
@@ -371,7 +374,6 @@ function draw() {
 	}
 }
 
-const inversePixelRatio = 4;
 function resize() {
 	canvas.width = Math.round(Math.min(1920, window.innerWidth) / inversePixelRatio);
 	canvas.height = Math.round(Math.min(1080, window.innerHeight) / inversePixelRatio);
