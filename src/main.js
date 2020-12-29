@@ -200,11 +200,11 @@ function getSinY(y) {
 	if (sinProfile === 0) { // straight road
 		return 0;
 	} else if (sinProfile === 1) { // curvy road (left)
-		let sin1 = Math.sin(p * p * 4 + Date.now() / 500);
+		let sin1 = Math.sin(Math.min(1, p * p) * 4 + Date.now() / 500);
 		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 2) { // curvy road (right)
-		let sin1 = Math.sin(p * p * 4 + Date.now() / 500);
+		let sin1 = Math.sin(Math.min(1, p * p) * 4 + Date.now() / 500);
 		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * -Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 3) { // Turning road (right)
