@@ -1,4 +1,5 @@
 import generateCloud from './cloud';
+import Chat from 'twitch-chat-emotes';
 
 const pallet = {
 	road: '#373A43',
@@ -6,10 +7,12 @@ const pallet = {
 	roadPaint: '#FFFFFF',
 	roadPaint2: '#373A43',
 }
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 let horizonStart = null;
+let groundHeight = null;
 const roadSegments = 6;
 const roadPaintWidth = 2;
 let roadWidth = null;
@@ -51,11 +54,12 @@ let lastFrame = Date.now();
 const clouds = [];
 const cloudLifespan = 15;
 setInterval(() => {
+	const scale = Math.random()*2 + 1;
 	clouds.push({
 		t: 0,
 		x: Math.round(canvas.width * Math.random()),
 		y: 0,
-		canvas: generateCloud(80, 40),
+		canvas: generateCloud(Math.round(80 * scale), Math.round(40 * scale)),
 	})
 }, 500);
 
@@ -97,7 +101,7 @@ function draw() {
 		ctx.drawImage(
 			cloud.canvas,
 			Math.round(cloud.x - width / 2),
-			y,
+			y - height,
 			width,
 			height,
 		);
@@ -141,14 +145,40 @@ function draw() {
 
 	roadTick += 0.25;
 	while (roadTick >= roadSegments) roadTick = 0;
+
+	/*
+		Draw emotes
+	*/
+
+	for (let index = pendingEmoteArray.length - 1; index >= 0; index--) {
+		const element = pendingEmoteArray[index];
+		const p = element.life;
+
+		let y = horizonStart + ((p * p) * groundHeight);
+
+		let size = (getScale(y) * 0.85 + 0.15) * 28;
+		for (let i = 0; i < element.emotes.length; i++) {
+			const emote = element.emotes[i];
+			ctx.drawImage(
+				emote.material.canvas,
+				Math.round((element.position.x - size/2) + (getSinY(y) * size) + size * i),
+				Math.round(y - size),
+				Math.round(size),
+				Math.round(size)
+			);
+		}
+		element.life += delta/1.5;
+		if (element.life > 1.5) {
+			pendingEmoteArray.splice(index, 1);
+		}
+	}
 }
 
 function resize() {
 	canvas.width = Math.round(window.innerWidth / 6);
 	canvas.height = Math.round(window.innerHeight / 6);
 	horizonStart = Math.round(canvas.height * 0.65);
-
-	console.log(getScale(0), getScale(horizonStart - 1), getScale(horizonStart), getScale(horizonStart + 1), getScale(canvas.height))
+	groundHeight = canvas.height - horizonStart;
 
 	roadWidth = Math.floor(canvas.width * 0.75);
 	ctx.imageSmoothingEnabled = false;
@@ -160,4 +190,36 @@ window.addEventListener("DOMContentLoaded", () => {
 	window.addEventListener('resize', resize);
 
 	draw();
+})
+
+
+let channels = ['moonmoon'];
+const query_vars = {};
+const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+	query_vars[key] = value;
+});
+if (query_vars.channels) {
+	channels = query_vars.channels.split(',');
+}
+
+const ChatInstance = new Chat({
+	channels,
+	duplicateEmoteLimit: 1,
+	duplicateEmoteLimit_pleb: 0,
+	maximumEmoteLimit_pleb: 1,
+})
+
+const pendingEmoteArray = [];
+ChatInstance.on("emotes", (e) => {
+	const output = {
+		position: { x: canvas.width/2 + (Math.random()-0.5)*roadWidth/3 },
+		emotes: [],
+		life: 0,
+	};
+	for (let index = 0; index < e.emotes.length; index++) {
+		const emote = e.emotes[index];
+		output.emotes.push(emote);
+	}
+
+	pendingEmoteArray.push(output);
 })
