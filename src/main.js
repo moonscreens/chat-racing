@@ -171,7 +171,7 @@ setInterval(() => {
 let roadTick = 0;
 function draw() {
 	requestAnimationFrame(draw);
-	const delta = (Date.now() - lastFrame) / 1000;
+	const delta = Math.min(1, (Date.now() - lastFrame) / 1000);
 	lastFrame = Date.now();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
