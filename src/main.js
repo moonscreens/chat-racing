@@ -24,7 +24,7 @@ const bloodSplatter = new Image();
 bloodSplatter.src = require('./blood-splatter.png');
 
 const carImage = new Image();
-carImage.src = require('./ae86.png');
+carImage.src = require('./car.png');
 
 const carImageDriftFlipped = document.createElement('canvas');
 
@@ -36,7 +36,18 @@ carImageDrift.addEventListener('load', () => {
 	ctx.scale(-1, 1);
 	ctx.drawImage(carImageDrift, -carImageDrift.width, 0);
 })
-carImageDrift.src = require('./ae86_drift.png');
+carImageDrift.src = require('./car-turn-2.png')
+
+const carImageDriftHalfFlipped = document.createElement('canvas');
+const carImageDriftHalf = new Image();
+carImageDriftHalf.addEventListener('load', () => {
+	carImageDriftHalfFlipped.width = carImageDriftHalf.width;
+	carImageDriftHalfFlipped.height = carImageDriftHalf.height;
+	const ctx = carImageDriftHalfFlipped.getContext('2d');
+	ctx.scale(-1, 1);
+	ctx.drawImage(carImageDriftHalf, -carImageDriftHalf.width, 0);
+})
+carImageDriftHalf.src = require('./car-turn-1.png');
 
 const possibleDecorations = [
 	{
@@ -408,10 +419,14 @@ function draw() {
 	const carX = getX(carY, car.x);
 	let image = carImage;
 	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight / 10, 0);
+	if (roadDirection < -0.1) {
+		image = carImageDriftHalfFlipped;
+	} else if (roadDirection > 0.1) {
+		image = carImageDriftHalf;
+	}
 	if (roadDirection < -0.5) {
 		image = carImageDriftFlipped;
-	}
-	if (roadDirection > 0.5) {
+	} else if (roadDirection > 0.5) {
 		image = carImageDrift;
 	}
 	car.x += (delta * roadDirection) * (1 - car.x * car.x * .9 + .1);
