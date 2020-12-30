@@ -459,10 +459,10 @@ function draw() {
 function resize() {
 	canvas.width = Math.round(Math.min(1920, window.innerWidth) / inversePixelRatio);
 	canvas.height = Math.round(Math.min(1080, window.innerHeight) / inversePixelRatio);
-	horizonStart = Math.round(canvas.height * 0.65);
+	horizonStart = Math.round(canvas.height * 0.75);
 	groundHeight = canvas.height - horizonStart;
 
-	roadWidth = Math.floor(canvas.width * 0.75);
+	roadWidth = Math.floor(canvas.width * 1);
 	ctx.imageSmoothingEnabled = false;
 }
 
