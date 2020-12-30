@@ -38,6 +38,46 @@ carImageDrift.addEventListener('load', () => {
 })
 carImageDrift.src = require('./ae86_drift.png');
 
+const possibleDecorations = [
+	{
+		url: require('./streetsign.png'),
+		range: 1.3,
+		cache: null,
+	},
+	{ url: require('./cacti.png'), },
+	{ url: require('./randomdots.png'), },
+	{ url: require('./randomdots.png'), },
+	{ url: require('./randomdots.png'), },
+];
+
+class Decoration {
+	constructor(url, range = null) {
+		this.image = new Image();
+		this.image.src = url;
+		if (typeof range === "number") {
+			this.x = (Math.random() > 0.5 ? 1 : -1) * range
+		} else if (typeof range === 'array') {
+
+		} else {
+			this.x = (Math.random() * 2 + 1) * (Math.random() > 0.5 ? 1 : -1);
+		}
+		this.life = 0;
+	}
+}
+
+for (let index = 0; index < possibleDecorations.length; index++) {
+	const element = possibleDecorations[index];
+	element.cache = new Decoration(element.url, element.range);
+}
+
+const decorations = [];
+
+setInterval(() => {
+	const dec = possibleDecorations[Math.floor(Math.random() * possibleDecorations.length)];
+	decorations.push(new Decoration(dec.url, dec.range));
+}, 100);
+
+
 const car = {
 	x: 0,
 	y: 0,
@@ -142,6 +182,15 @@ function getScale(y) {
 	return scale;
 }
 
+function getTransparency(y) {
+	const p = ((y - horizonStart) / groundHeight);
+	let t = p * 10;
+	if (y > canvas.height) {
+		t = (2 - p);
+	}
+	return Math.min(1, t * t);
+}
+
 function getX(y, x) {
 	const scale = 0.15 + getScale(y) * 0.85;
 	const sin = getSinY(y);
@@ -200,11 +249,11 @@ function getSinY(y) {
 	if (sinProfile === 0) { // straight road
 		return 0;
 	} else if (sinProfile === 1) { // curvy road (left)
-		let sin1 = Math.sin(Math.min(1, p * p) * 4 + Date.now() / 500);
+		let sin1 = Math.sin(Math.min(1, p * p) * 3 + Date.now() / 500);
 		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 2) { // curvy road (right)
-		let sin1 = Math.sin(Math.min(1, p * p) * 4 + Date.now() / 500);
+		let sin1 = Math.sin(Math.min(1, p * p) * 3 + Date.now() / 500);
 		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * -Math.PI / 2);
 		return sin1 * sin2;
 	} else if (sinProfile === 3) { // Turning road (right)
@@ -334,6 +383,24 @@ function draw() {
 		foregroundEmoteIndex = -1;
 	}
 
+
+	for (let index = decorations.length - 1; index >= 0; index--) {
+		const decoration = decorations[index];
+		decoration.life += delta / 2;
+		const p = decoration.life * decoration.life;
+		const y = horizonStart + groundHeight * p;
+		const x = getX(y, decoration.x);
+		const scale = getScale(y) * 0.85 + 0.15;
+		const width = scale * decoration.image.width * 1.5;
+		const height = scale * decoration.image.height * 1.5;
+		ctx.globalAlpha = getTransparency(y);
+		ctx.drawImage(decoration.image, Math.round(x - width / 2), Math.round(y - height), Math.round(width), Math.round(height));
+		if (decoration.life > 1.5) {
+			decorations.splice(index, 1);
+		}
+	}
+	ctx.globalAlpha = 1;
+
 	/*
 		Draw car
 	*/
@@ -364,7 +431,7 @@ function draw() {
 	);
 	car.last_x = carX;
 	car.last_y = carY;
-	
+
 	/*
 		Draw close emotes
 	*/
