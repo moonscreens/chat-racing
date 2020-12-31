@@ -394,6 +394,9 @@ function draw() {
 		foregroundEmoteIndex = -1;
 	}
 
+	/*
+		Draw decorations
+	*/
 
 	for (let index = decorations.length - 1; index >= 0; index--) {
 		const decoration = decorations[index];
@@ -419,9 +422,9 @@ function draw() {
 	const carX = getX(carY, car.x);
 	let image = carImage;
 	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight / 10, 0);
-	if (roadDirection < -0.1) {
+	if (roadDirection < -0.25) {
 		image = carImageDriftHalfFlipped;
-	} else if (roadDirection > 0.1) {
+	} else if (roadDirection > 0.25) {
 		image = carImageDriftHalf;
 	}
 	if (roadDirection < -0.5) {
