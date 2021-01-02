@@ -110,8 +110,12 @@ ctx.drawRoad = (segment, x, y, w, h) => {
 	if (segment < Math.floor(roadSegments / 2)) {
 		ctx.fillStyle = pallet.road;
 		ctx.fillRect(x, y, w, h);
+
 		ctx.fillStyle = pallet.roadPaint;
-		ctx.fillRect(Math.floor(x + w / 2), y, roadPaintWidth, h);
+		ctx.fillRect(Math.floor(x + w / 3), y, roadPaintWidth, h);
+		ctx.fillRect(Math.floor(x + (w / 3) * 2), y, roadPaintWidth, h);
+
+
 		ctx.fillStyle = pallet.roadPaint2;
 	} else {
 		ctx.fillStyle = pallet.road2;
