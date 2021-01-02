@@ -50,12 +50,11 @@ carImageDriftHalf.addEventListener('load', () => {
 carImageDriftHalf.src = require('./car-turn-1.png');
 
 const possibleDecorations = [
-	{
-		url: require('./streetsign.png'),
-		range: 1.3,
-		cache: null,
-	},
 	{ url: require('./cacti.png'), },
+	{ url: require('./randomdots.png'), },
+	{ url: require('./randomdots.png'), },
+	{ url: require('./randomdots.png'), },
+	{ url: require('./randomdots.png'), },
 	{ url: require('./randomdots.png'), },
 	{ url: require('./randomdots.png'), },
 	{ url: require('./randomdots.png'), },
