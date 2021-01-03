@@ -1,24 +1,33 @@
 import generateCloud from './cloud';
 import Chat from 'twitch-chat-emotes';
+import * as PIXI from 'pixi.js';
 
 const pallet = {
-	road: '#373A43',
-	road2: '#424651',
-	roadPaint: '#FFFFFF',
-	roadPaint2: '#373A43',
+	road: 0x373A43,
+	road2: 0x424651,
+	roadPaint: 0xFFFFFF,
+	roadPaint2: 0x373A43,
+	sky: 0x5ADBFF,
+	ground: 0xF6F5AE,
 }
 
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
+const width = 1920 / 4;
+const height = 1080 / 4;
+const app = new PIXI.Application({
+	width, height, backgroundColor: pallet.sky, resolution: 1,
+});
+const stage = new PIXI.Container();
+app.stage.addChild(stage);
 
-const inversePixelRatio = 4; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
-const roadSegments = 6; // How long the stripes of paint are
-const roadPaintWidth = 3; // How wide the stripes of paint are
-const flyingRarity = 20; // The higher the number, the less often emotes will fly off the windshield
+const getScale = (x) => {
+	let scale = x * 0.85 + 0.15;
+	return scale * scale;
+}
+const getY = (x) => {
+	let y = x * x;
+	return y * (height / 2);
+}
 
-let roadWidth = null; // set in resize function
-let horizonStart = null; // set in resize function
-let groundHeight = null; // set in resize function
 
 const bloodSplatter = new Image();
 bloodSplatter.src = require('./blood-splatter.png');
@@ -60,161 +69,6 @@ const possibleDecorations = [
 	{ url: require('./randomdots.png'), },
 ];
 
-class Decoration {
-	constructor(url, range = null) {
-		this.image = new Image();
-		this.image.src = url;
-		if (typeof range === "number") {
-			this.x = (Math.random() > 0.5 ? 1 : -1) * range
-		} else if (typeof range === 'array') {
-
-		} else {
-			this.x = (Math.random() * 2 + 1) * (Math.random() > 0.5 ? 1 : -1);
-		}
-		this.life = 0;
-	}
-}
-
-for (let index = 0; index < possibleDecorations.length; index++) {
-	const element = possibleDecorations[index];
-	element.cache = new Decoration(element.url, element.range);
-}
-
-const decorations = [];
-
-setInterval(() => {
-	const dec = possibleDecorations[Math.floor(Math.random() * possibleDecorations.length)];
-	decorations.push(new Decoration(dec.url, dec.range));
-}, 100);
-
-
-const car = {
-	x: 0,
-	y: 0,
-	last_x: 0,
-	last_y: 0,
-	collision: 0,
-}
-
-function carCollision(x, y) {
-	const halfx = carImage.width / 1.75;
-	const halfy = carImage.height / 2;
-	return (
-		(x < car.last_x + halfx && x > car.last_x - halfx)
-		&&
-		(y < car.last_y + halfy && y > car.last_y - halfy)
-	)
-}
-
-ctx.drawRoad = (segment, x, y, w, h) => {
-	if (segment < Math.floor(roadSegments / 2)) {
-		ctx.fillStyle = pallet.road;
-		ctx.fillRect(x, y, w, h);
-
-		ctx.fillStyle = pallet.roadPaint;
-		ctx.fillRect(Math.floor(x + w / 3), y, roadPaintWidth, h);
-		ctx.fillRect(Math.floor(x + (w / 3) * 2), y, roadPaintWidth, h);
-
-
-		ctx.fillStyle = pallet.roadPaint2;
-	} else {
-		ctx.fillStyle = pallet.road2;
-		ctx.fillRect(x, y, w, h);
-		ctx.fillStyle = pallet.roadPaint;
-	}
-	ctx.fillRect(x, y, roadPaintWidth, h);
-	ctx.fillRect(x + w - roadPaintWidth, y, roadPaintWidth, h);
-}
-
-
-ctx.drawEmote = (delta, element, index) => {
-	const p = element.life;
-	let y = horizonStart + ((p * p) * groundHeight);
-	let x = getX(y, element.position.x);
-
-	element.pxpos.x = x;
-	element.pxpos.y = y;
-
-	let size = (getScale(y) * 0.85 + 0.15) * (roadWidth / 10);
-
-	ctx.save();
-	ctx.translate(x, y);
-	if (element.dying) {
-		let dieP = (Date.now() - element.dying) / 1000;
-		let fadeOut = 1;
-		if (dieP > 1) {
-			dieP = 2 - dieP;
-			fadeOut = dieP;
-		}
-		dieP = EasingFunctions.easeOutCubic(dieP);
-
-		ctx.globalAlpha = 0.5;
-		ctx.drawImage(bloodSplatter, -size / 2, -size / 2, size, size)
-		ctx.globalAlpha = 1;
-
-		if (element.flying) {
-			ctx.globalAlpha = fadeOut;
-			ctx.translate(0, -groundHeight * (dieP) * 2);
-		} else {
-			ctx.rotate(Math.PI / 2);
-			ctx.scale(0.5, 0.5);
-		}
-	}
-
-	for (let i = 0; i < element.emotes.length; i++) {
-		const emote = element.emotes[i];
-		ctx.drawImage(
-			emote.material.canvas,
-			Math.round(
-				(size * i) -
-				(size * element.emotes.length / 2)),
-			Math.round(-size),
-			Math.round(size),
-			Math.round(size)
-		);
-	}
-	element.life += delta / 1.5;
-	if (element.life > 2) {
-		pendingEmoteArray.splice(index, 1);
-	} else if (!element.dying && carCollision(element.pxpos.x, element.pxpos.y - size)) {
-		element.dying = Date.now();
-		car.collision = Date.now();
-		element.flying = Math.floor(Math.random() * flyingRarity) === 0;
-	}
-	ctx.restore();
-	ctx.globalAlpha = 1;
-}
-
-function getScale(y) {
-	let scale = 0;
-	if (y > horizonStart) {
-		scale = (y - horizonStart) / (canvas.height - horizonStart);
-	} else if (y < horizonStart) {
-		scale = 1 - y / horizonStart;
-	}
-
-	return scale;
-}
-
-function getTransparency(y) {
-	const p = ((y - horizonStart) / groundHeight);
-	let t = p * 10;
-	if (y > canvas.height) {
-		t = (2 - p);
-	}
-	return Math.min(1, t * t);
-}
-
-function getX(y, x) {
-	const scale = 0.15 + getScale(y) * 0.85;
-	const sin = getSinY(y);
-
-	const center = canvas.width / 2 + sin * roadWidth / 10;
-
-	return center + x * scale * roadWidth / 2;
-}
-
-
 const EasingFunctions = {
 	// no easing, no acceleration
 	linear: t => t,
@@ -244,240 +98,100 @@ const EasingFunctions = {
 	easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 }
 
-
-let sinStart = Date.now();
-let sinLength = 20000; // How long each road profile lasts for, 20000 = 20 seconds
-let sinDate = 1;
-let sinOptions = 5; // The number of types of road profiles
-let sinProfile = Math.floor(Math.random() * sinOptions); // The default starting profile
-function getSinY(y) {
-	//return 0;
-	//return Math.sin((y / canvas.height) * 8 + Date.now() / 1000);
-	let sinp = sinDate;
-	if (sinDate >= sinLength / 2) {
-		sinp = sinLength / 2 - (sinDate - sinLength / 2)
-	}
-	sinp /= sinLength / 2;
-	const p = 1 - (y - horizonStart) / groundHeight;
-
-	if (sinProfile === 0) { // straight road
-		return 0;
-	} else if (sinProfile === 1) { // curvy road (left)
-		let sin1 = Math.sin(Math.min(1, p * p) * 3 + Date.now() / 500);
-		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * Math.PI / 2);
-		return sin1 * sin2;
-	} else if (sinProfile === 2) { // curvy road (right)
-		let sin1 = Math.sin(Math.min(1, p * p) * 3 + Date.now() / 500);
-		let sin2 = Math.sin(EasingFunctions.easeInCubic(sinp) * -Math.PI / 2);
-		return sin1 * sin2;
-	} else if (sinProfile === 3) { // Turning road (right)
-		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * 4;
-		return sin1;
-	} else if (sinProfile === 4) { // Turning road (left)
-		let sin1 = p * p * EasingFunctions.easeInOutCubic(sinp) * -4;
-		return sin1;
-	}
+let terrainModifier = [];
+for (let index = 0; index < height; index++) {
+	terrainModifier.push([0, 0]);
 }
-
-let lastFrame = Date.now();
-
-const clouds = [];
-const cloudLifespan = 15;
-setInterval(() => {
-	const scale = Math.random() * 2 + 0.5;
-	clouds.push({
-		t: 0,
-		x: Math.random() * 2 - 1,
-		y: 0,
-		canvas: generateCloud(Math.round(80 * scale), Math.round(40 * scale)),
-	})
-}, 250);
-
 let roadTick = 0;
-function draw() {
-	requestAnimationFrame(draw);
-	const delta = Math.min(1, (Date.now() - lastFrame) / 1000);
-	lastFrame = Date.now();
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+function draw(delta) {
 
-	sinDate = Date.now() - sinStart;
-	if (sinDate >= sinLength) {
-		sinStart = Date.now();
-		sinDate = 0;
-		sinProfile = Math.floor(Math.random() * sinOptions);
+	for (let index = terrainModifier.length-1; index > 0; index--) {
+		terrainModifier[index][0] = terrainModifier[index-1][0];
+		terrainModifier[index][1] = terrainModifier[index-1][1];
 	}
+	terrainModifier[0][0] = Math.sin(Date.now() / 100) * width/40;
+	terrainModifier[0][1] = Math.cos(Date.now() / 230) * width/40;
+	
+	for (let index = 0; index < ground.children.length; index++) {
+		const element = ground.children[index];
+		element.p += 3 / ground.children.length;
+		if (element.p > 1) element.p -= 1;
+		const p = element.p;
+		element.scale.x = getScale(p);
+		element.position.y = getY(p);
 
-	/*
-		Draw sky
-	*/
-	ctx.fillStyle = '#5ADBFF';
-	ctx.fillRect(0, 0, canvas.width, horizonStart);
+		element.zIndex = Math.round(p * height);
 
-	/*
-		Draw clouds
-	*/
-	for (let index = clouds.length - 1; index >= 0; index--) {
-		const cloud = clouds[index];
-		ctx.imageSmoothingEnabled = false;
-		const p = (cloud.t / cloudLifespan);
-
-
-		let y = horizonStart * (1 - p * p);
-
-		const sizeMult = getScale(y);
-		const width = Math.round(cloud.canvas.width * sizeMult);
-		const height = Math.round(cloud.canvas.height * sizeMult);
-
-		let offset = canvas.width / 4;
-		if (cloud.x < canvas.width / 2) {
-			offset *= -1;
-		}
-		offset *= p;
-
-		ctx.drawImage(
-			cloud.canvas,
-			Math.round(canvas.width / 2 + (cloud.x * roadWidth * (sizeMult * 0.5 + 0.5)) - width / 2),
-			y - height,
-			width,
-			height,
-		);
-		cloud.t += delta;
-		if (cloud.t >= cloudLifespan * 1.5) {
-			clouds.splice(index, 1);
+		try {
+			element.position.y -= terrainModifier[Math.floor(p * height/2)][1] * element.scale.x;
+			element.position.x = terrainModifier[Math.floor(p * height/2)][0] * element.scale.x;
+		} catch (e) {
+			console.log(element.p, height)
 		}
 	}
 
-	/*
-		Draw ground
-	*/
-	ctx.fillStyle = '#F6F5AE';
-	ctx.fillRect(0, horizonStart, canvas.width, canvas.height);
-
-
-	/*
-		Draw road
-	*/
-	let tempRoadTick = roadTick;
-	for (let index = Math.ceil(canvas.height); index >= horizonStart; index--) {
-		const scale = getScale(y);
-		let y = index;
-
-		let x = getX(y, 0);
-		let size = roadWidth * (getScale(y) * 0.85 + 0.15);
-
-		ctx.drawRoad(
-			tempRoadTick,
-			Math.round(x - size / 2),
-			index,
-			Math.round(size),
-			1
-		)
-
-		let tickScale = 1 - scale;
-		tempRoadTick += tickScale * tickScale;
-		while (tempRoadTick >= roadSegments) tempRoadTick = 0;
-	}
-
-	roadTick += 0.25;
-	while (roadTick >= roadSegments) roadTick = 0;
-
-	/*
-		Draw distant emotes
-	*/
-
-	let foregroundEmoteIndex = pendingEmoteArray.length - 1;
-	for (let index = pendingEmoteArray.length - 1; index >= 0; index--) {
-		const element = pendingEmoteArray[index];
-		if (element.pxpos.y < car.last_y + carImage.height) {
-			ctx.drawEmote(delta, element, index);
-		} else {
-			foregroundEmoteIndex = index;
-			break;
-		}
-		foregroundEmoteIndex = -1;
-	}
-
-	/*
-		Draw decorations
-	*/
-
-	for (let index = decorations.length - 1; index >= 0; index--) {
-		const decoration = decorations[index];
-		decoration.life += delta / 2;
-		const p = decoration.life * decoration.life;
-		const y = horizonStart + groundHeight * p;
-		const x = getX(y, decoration.x);
-		const scale = getScale(y) * 0.85 + 0.15;
-		const width = scale * decoration.image.width * 1.5;
-		const height = scale * decoration.image.height * 1.5;
-		ctx.globalAlpha = getTransparency(y);
-		ctx.drawImage(decoration.image, Math.round(x - width / 2), Math.round(y - height), Math.round(width), Math.round(height));
-		if (decoration.life > 1.5) {
-			decorations.splice(index, 1);
-		}
-	}
-	ctx.globalAlpha = 1;
-
-	/*
-		Draw car
-	*/
-	const carY = canvas.height - (carImage.height + 5);
-	const carX = getX(carY, car.x);
-	let image = carImage;
-	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight / 10, 0);
-	if (roadDirection < -0.25) {
-		image = carImageDriftHalfFlipped;
-	} else if (roadDirection > 0.25) {
-		image = carImageDriftHalf;
-	}
-	if (roadDirection < -0.5) {
-		image = carImageDriftFlipped;
-	} else if (roadDirection > 0.5) {
-		image = carImageDrift;
-	}
-	car.x += (delta * roadDirection) * (1 - car.x * car.x * .9 + .1);
-	//car.x = Math.max(-1, Math.min(1, car.x));
-
-	if (car.x > 0) car.x -= delta * (car.x * car.x);
-	if (car.x < 0) car.x += delta * (car.x * car.x);
-
-	const passiveBounce = Math.sin(Date.now() / 50) * 0.6;
-	const collisionProgress = Date.now() - car.collision;
-	const collisionBounce = collisionProgress < 250 ? Math.sin(Date.now() / 20) * 2 : 0;
-
-	ctx.drawImage(
-		image,
-		Math.round(carX - carImage.width / 2),
-		Math.round(carY + passiveBounce - collisionBounce)
-	);
-	car.last_x = carX;
-	car.last_y = carY;
-
-	/*
-		Draw close emotes
-	*/
-	for (let index = foregroundEmoteIndex; index >= 0; index--) {
-		const element = pendingEmoteArray[index];
-		ctx.drawEmote(delta, element, index);
-	}
+	roadTick++;
 }
+
+const ground = new PIXI.Container();
+ground.sortableChildren = true;
+stage.addChild(ground);
+
+const roadPaintWidth = 0.025;
+const roadSegments = 3 * 2; // should always be an even number
+const roadDrawHeight = 64;
+const roadLanes = 3;
+const road = new PIXI.Container();
+road.zIndex = 10;
+ground.addChild(road);
 
 function resize() {
-	canvas.width = Math.round(Math.min(1920, window.innerWidth) / inversePixelRatio);
-	canvas.height = Math.round(Math.min(1080, window.innerHeight) / inversePixelRatio);
-	horizonStart = Math.round(canvas.height * 0.75);
-	groundHeight = canvas.height - horizonStart;
+	//app.resize(window.innerWidth, window.innerHeight);
+	stage.x = Math.round(width / 2);
+	stage.y = Math.round(height / 2);
 
-	roadWidth = Math.floor(canvas.width * 1);
-	ctx.imageSmoothingEnabled = false;
+	for (let index = 0; index < height; index++) {
+		const slice = new PIXI.Container();
+		ground.addChild(slice);
+		slice.p = index / (height);
+		slice.position.y = index;
+
+		const groundGraphic = new PIXI.Graphics();
+		groundGraphic.beginFill(pallet.ground);
+		groundGraphic.drawRect(Math.round(-stage.x * 100), 0, width * 100, roadDrawHeight);
+		groundGraphic.endFill();
+		slice.addChild(groundGraphic);
+
+
+		const roadSegment = new PIXI.Graphics();
+		const type = Math.floor((index / height) * roadSegments) % 2;
+		roadSegment.beginFill(pallet.road2);
+		if (type === 0) {
+			roadSegment.beginFill(pallet.road);
+		}
+		roadSegment.drawRect(Math.round(-stage.x), 0, width, roadDrawHeight);
+		roadSegment.endFill();
+
+		if (type === 0) {
+			const pWidth = width * roadPaintWidth;
+			for (let i = 0; i < (roadLanes - 1); i++) {
+				roadSegment.beginFill(pallet.roadPaint);
+				roadSegment.drawRect(Math.round(-stage.x) + (width/roadLanes)*(1 + i) - pWidth, 0, pWidth, roadDrawHeight);
+				roadSegment.endFill();
+			}
+		}
+
+		slice.addChild(roadSegment);
+	}
+
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-	document.body.appendChild(canvas);
+	document.body.appendChild(app.view);
 	resize();
-	window.addEventListener('resize', resize);
 
-	draw();
+	// Listen for animate update
+	app.ticker.add(draw);
 })
 
 
@@ -510,6 +224,5 @@ ChatInstance.on("emotes", (e) => {
 		const emote = e.emotes[index];
 		output.emotes.push(emote);
 	}
-
-	pendingEmoteArray.push(output);
+	//pendingEmoteArray.push(output);
 })
