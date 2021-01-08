@@ -445,7 +445,8 @@ function draw() {
 	const carY = canvas.height - (carImage.height + 5);
 	const carX = getX(carY, car.x);
 	let image = carImage;
-	const roadDirection = getX(canvas.height, 0) - getX(canvas.height - groundHeight / 10, 0);
+	const roadDirection = (getX(carY, 0) - getX(carY - carImage.height, 0)) / 180;
+	console.log(carY, carY - carImage.height, roadDirection)
 	if (roadDirection < -0.25) {
 		image = carImageDriftHalfFlipped;
 	} else if (roadDirection > 0.25) {
@@ -456,7 +457,7 @@ function draw() {
 	} else if (roadDirection > 0.5) {
 		image = carImageDrift;
 	}
-	car.x += (delta * roadDirection) * (1 - car.x * car.x * .9 + .1);
+	car.x += (delta * roadDirection) * 2;
 	//car.x = Math.max(-1, Math.min(1, car.x));
 
 	if (car.x > 0) car.x -= delta * (car.x * car.x);
