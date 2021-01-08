@@ -23,6 +23,9 @@ let groundHeight = null; // set in resize function
 const bloodSplatter = new Image();
 bloodSplatter.src = require('./blood-splatter.png');
 
+const shadowImage = new Image();
+shadowImage.src = require('./shadow.gif');
+
 const carImage = new Image();
 carImage.src = require('./car.png');
 
@@ -139,6 +142,24 @@ ctx.drawEmote = (delta, element, index) => {
 
 	ctx.save();
 	ctx.translate(x, y);
+
+
+	if (!element.dying || (element.dying && element.flying)) {
+		ctx.globalAlpha = 0.35;
+		for (let i = 0; i < element.emotes.length; i++) {
+			const x = Math.round(
+				(size * i) -
+				(size * element.emotes.length / 2));
+			ctx.drawImage(shadowImage,
+				x,
+				-Math.round(size / 8),
+				Math.round(size),
+				Math.round(size / 4)
+			);
+		}
+		ctx.globalAlpha = 1;
+	}
+
 	if (element.dying) {
 		let dieP = (Date.now() - element.dying) / 1000;
 		let fadeOut = 1;
