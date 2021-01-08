@@ -100,7 +100,7 @@ const car = {
 }
 
 function carCollision(x, y) {
-	const halfx = carImage.width / 1.75;
+	const halfx = carImage.width / 2;
 	const halfy = carImage.height / 2;
 	return (
 		(x < car.last_x + halfx && x > car.last_x - halfx)
