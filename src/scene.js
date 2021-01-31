@@ -18,7 +18,7 @@ module.exports = function (scene, tickArray) {
 		const cloud = new THREE.Sprite(material);
 		clouds.push(cloud);
 		scene.add(cloud);
-		cloud.position.z = -config.groundLength;
+		cloud.position.z = -config.groundLength * 2;
 		cloud.position.y = 20 + Math.random() * 50;
 		cloud.position.x = (Math.random() - 0.5) * 2 * config.groundWidth;
 		cloud.scale.setScalar(10);
@@ -51,6 +51,8 @@ module.exports = function (scene, tickArray) {
 	});*/
 
 	scene.background = new THREE.Color(config.pallet.sky_blue);
+	scene.fog = new THREE.Fog(scene.background, config.groundLength, config.groundLength * 2);
+
 
 	/*const ground_geometry = new THREE.PlaneBufferGeometry(config.groundWidth, config.groundLength, 1);
 	const ground_material = new THREE.MeshBasicMaterial({ color: config.pallet.desert.ground, side: THREE.FrontSide });

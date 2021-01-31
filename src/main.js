@@ -25,7 +25,7 @@ function resize() {
 }
 
 function init() {
-	camera = new THREE.PerspectiveCamera(70, 1920 / 1080, 1, config.groundLength);
+	camera = new THREE.PerspectiveCamera(70, 1920 / 1080, 1, config.groundLength * 2);
 	camera.position.x = 0;
 	camera.position.y = config.cameraHeight;
 	camera.position.z = 0;
