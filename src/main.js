@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import generateCloud from './cloud';
 import Chat from 'twitch-chat-emotes';
+import {groundInit} from './ground';
+
 
 const initScene = require('./scene');
 
@@ -11,35 +13,26 @@ const roadSegments = 6; // How long the stripes of paint are
 const roadPaintWidth = 3; // How wide the stripes of paint are
 const flyingRarity = 20; // The higher the number, the less often emotes will fly off the windshield
 
-const cameraDistance = 30;
-
 let roadWidth = null; // set in resize function
 
 let camera, scene, renderer;
 const tickArray = [];
 
 function resize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.aspect = 1920 / 1080;
 	camera.updateProjectionMatrix();
-	renderer.setSize(Math.round(window.innerWidth / inversePixelRatio), Math.round(window.innerHeight / inversePixelRatio));
+	renderer.setSize(Math.round(1920 / inversePixelRatio), Math.round(1080 / inversePixelRatio));
 }
 
 function init() {
-	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 200);
+	camera = new THREE.PerspectiveCamera(70, 1920 / 1080, 1, config.groundLength);
 	camera.position.x = 0;
-	camera.position.y = cameraDistance / 4;
-	camera.position.z = cameraDistance;
+	camera.position.y = config.cameraHeight;
+	camera.position.z = 0;
+	camera.rotation.x = 0.1;
 	//camera.lookAt(0, 0, 0);
 
 	scene = new THREE.Scene();
-
-	const light = new THREE.AmbientLight(0x555555);
-	scene.add(light);
-
-	const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-	light.position.set(0, 100, 0.25);
-
-	scene.add(directionalLight);
 
 	renderer = new THREE.WebGLRenderer({ antialias: false });
 	window.addEventListener('resize', resize);
@@ -47,6 +40,7 @@ function init() {
 	document.body.appendChild(renderer.domElement);
 
 	initScene(scene, tickArray);
+	groundInit(scene, tickArray);
 
 	draw();
 }
