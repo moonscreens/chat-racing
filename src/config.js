@@ -7,6 +7,11 @@ module.exports = {
 	groundResolutionY: 1,
 	roadPxWidth: 30,
 
+	speedMultiplier: 50,
+
+	emoteSize: 3,
+	emoteSpawnVariance: 12,
+
 	cameraHeight: 5,
 
 	roadPaintWidth: 1, //how thick the slices of paint are

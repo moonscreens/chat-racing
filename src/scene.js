@@ -28,7 +28,7 @@ module.exports = function (scene, tickArray) {
 	tickArray.push((delta) => {
 		for (let index = clouds.length-1; index >= 0; index--) {
 			const cloud = clouds[index];
-			cloud.position.z += delta * 10;
+			cloud.position.z += delta * config.speedMultiplier;
 			if (cloud.position.z > 0) {
 				scene.remove(cloud);
 				clouds.splice(index, 1);

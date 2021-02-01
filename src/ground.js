@@ -18,7 +18,7 @@ export function groundInit(scene, tickArray) {
     tickArray.push((delta) => {
         for (let index = 0; index < roadArray.length; index++) {
             const slice = roadArray[index];
-            slice.position.z += delta * 50;
+            slice.position.z += delta * config.speedMultiplier;
             if (slice.position.z > 0) {
                 slice.position.z += spawningPosition;
                 slice.position.x = getPositionModifier()
