@@ -3,7 +3,7 @@ import { SpriteMaterial } from 'three';
 import Chat from 'twitch-chat-emotes';
 import { groundInit, getPositionModifier } from './ground';
 
-let channels = ['moonmoon', 'arcadum'];
+let channels = ['moonmoon'];
 const query_vars = {};
 const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 	query_vars[key] = value;
