@@ -19,11 +19,11 @@ module.exports = function (scene, tickArray) {
 		clouds.push(cloud);
 		scene.add(cloud);
 		cloud.position.z = -config.groundLength * 2;
-		cloud.position.y = 20 + Math.random() * 50;
+		cloud.position.y = 100 + Math.random() * 50;
 		cloud.position.x = (Math.random() - 0.5) * 2 * config.groundWidth;
-		cloud.scale.setScalar(10);
+		cloud.scale.setScalar(100);
 		cloud.scale.x *= 2.25;
-	}, 10);
+	}, 100);
 
 	tickArray.push((delta) => {
 		for (let index = clouds.length-1; index >= 0; index--) {
