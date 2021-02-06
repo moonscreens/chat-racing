@@ -30,10 +30,6 @@ export function getRoadPresetProgress() {
     }
 }
 
-setInterval(()=>{
-    console.log(getRoadPresetProgress());
-}, 30)
-
 export function getPositionModifier() {
     switch (roadPresets[roadPreset]) {
         case 'wavy':

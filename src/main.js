@@ -27,11 +27,6 @@ const initScene = require('./scene');
 const config = require('./config');
 
 const inversePixelRatio = 3; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
-const roadSegments = 6; // How long the stripes of paint are
-const roadPaintWidth = 3; // How wide the stripes of paint are
-const flyingRarity = 20; // The higher the number, the less often emotes will fly off the windshield
-
-let roadWidth = null; // set in resize function
 
 let camera, scene, renderer;
 const tickArray = [];
@@ -85,6 +80,39 @@ function init() {
 	draw();
 }
 
+const cactus_image = new Image();
+cactus_image.addEventListener('load', () => {
+	cactus_texture.needsUpdate = true;
+	cactus_material.needsUpdate = true;
+})
+cactus_image.src = require('./cacti.png');
+const cactus_texture = new THREE.Texture(cactus_image, undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
+const cactus_material = new THREE.SpriteMaterial({
+	map: cactus_texture,
+});
+setInterval(() => {
+	const group = createGroup();
+	const cactus = new THREE.Sprite(cactus_material);
+	group.add(cactus);
+	const x = Math.random() > 0.5 ? 1 : -1;
+	group.scale.setScalar(10);
+	group.position.y += 5;
+	group.position.x += (25 * x) + (Math.random() * config.emoteSpawnVariance * 10 * x);
+	scene.add(group);
+}, 100);
+
+function createGroup(thing) {
+	const group = new THREE.Group();
+
+	group.position.y = getHeightModifier();
+	group.position.x = getPositionModifier();
+	group.position.z = -config.groundLength / 2;
+
+	scene.add(group);
+	emotes.push(group);
+	return group;
+}
+
 let lastFrame = Date.now();
 function draw() {
 	requestAnimationFrame(draw);
@@ -113,18 +141,15 @@ function draw() {
 
 	for (let index = 0; index < pendingEmoteArray.length; index++) {
 		const element = pendingEmoteArray[index];
-		const group = new THREE.Group();
+		const group = createGroup();
 		for (let i = 0; i < element.length; i++) {
 			const sprite = element[i];
 			if (element.length > 1) sprite.position.x = (-element.length / 2) + i;
 			group.add(sprite);
 		}
 		group.scale.setScalar(config.emoteSize);
-		group.position.y = config.emoteSize / 2 + getHeightModifier();
-		group.position.x = getPositionModifier() + (Math.random()-0.5)*2*config.emoteSpawnVariance;
-		group.position.z = -config.groundLength / 2;
-		scene.add(group);
-		emotes.push(group);
+		group.position.y += config.emoteSize / 2;
+		group.position.x += (Math.random() - 0.5) * 2 * config.emoteSpawnVariance;
 	}
 	if (pendingEmoteArray.length > 0) pendingEmoteArray.splice(0, pendingEmoteArray.length);
 
