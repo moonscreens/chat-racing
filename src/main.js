@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { SpriteMaterial } from 'three';
 import Chat from 'twitch-chat-emotes';
-import { groundInit, getPositionModifier } from './ground';
+import { groundInit, getPositionModifier, getHeightModifier } from './ground';
 
 let channels = ['moonmoon'];
 const query_vars = {};
@@ -121,7 +120,7 @@ function draw() {
 			group.add(sprite);
 		}
 		group.scale.setScalar(config.emoteSize);
-		group.position.y = config.emoteSize / 2;
+		group.position.y = config.emoteSize / 2 + getHeightModifier();
 		group.position.x = getPositionModifier() + (Math.random()-0.5)*2*config.emoteSpawnVariance;
 		group.position.z = -config.groundLength / 2;
 		scene.add(group);

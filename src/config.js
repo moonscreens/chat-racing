@@ -2,9 +2,12 @@ module.exports = {
 	groundWidth: 480 * 2, //ThreeJS units, how wide the ground is
 	groundLength: 350, //ThreeJS units, how far the ground extends
 	groundSlices: 100, //The depth resolution of the ground
+	groundHeight: 10,
 
 	groundResolutionX: 480 * 2,
 	groundResolutionY: 1,
+	roadPresetDuration: 30000,
+	roadPresetEasing: 5000,
 	roadPxWidth: 30,
 
 	speedMultiplier: 50,

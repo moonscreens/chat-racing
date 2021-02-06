@@ -5,9 +5,58 @@ const spawningPosition = -config.groundLength / 2;
 
 const startTime = Date.now();
 
+let roadPreset = 2;
+let roadChange = Date.now();
+const roadPresets = [
+    'straight',
+    'wavy',
+    'bumpy',
+];
+
+setInterval(() => {
+    roadPreset = Math.floor(Math.random() * roadPresets.length);
+    roadChange = Date.now();
+}, config.roadPresetDuration);
+
+const roadPresetOffset = config.roadPresetDuration - config.roadPresetEasing;
+export function getRoadPresetProgress() {
+    const t = Date.now() - roadChange;
+    if (t < config.roadPresetEasing) {
+        return t / config.roadPresetEasing;
+    } else if (t > roadPresetOffset) {
+        return 1 - (t - roadPresetOffset) / config.roadPresetEasing;
+    } else {
+        return 1;
+    }
+}
+
+setInterval(()=>{
+    console.log(getRoadPresetProgress());
+}, 30)
+
 export function getPositionModifier() {
-    return (Math.sin(Date.now() / 750) * Math.sin(Date.now() / 7500)) * 15;
-    return 0;
+    switch (roadPresets[roadPreset]) {
+        case 'wavy':
+            return (
+                Math.sin(Date.now() / 750) * 15
+            ) * getRoadPresetProgress();
+            break;
+        default:
+            return 0;
+    }
+}
+export function getHeightModifier() {
+    switch (roadPresets[roadPreset]) {
+        case 'bumpy':
+            return (
+                (
+                    Math.sin(Date.now() / 500) / 2 + 0.5
+                ) * -config.groundHeight
+            ) * getRoadPresetProgress();
+            break;
+        default:
+            return 0;
+    }
 }
 
 export function groundInit(scene, tickArray) {
@@ -21,7 +70,8 @@ export function groundInit(scene, tickArray) {
             slice.position.z += delta * config.speedMultiplier;
             if (slice.position.z > 0) {
                 slice.position.z += spawningPosition;
-                slice.position.x = getPositionModifier()
+                slice.position.x = getPositionModifier();
+                slice.position.y = (-config.groundHeight / 2) + getHeightModifier();
             }
         }
     });
@@ -30,7 +80,8 @@ export function groundInit(scene, tickArray) {
 const roadArray = [];
 
 const sliceDepth = (config.groundLength / 2) / config.groundSlices;
-const ground_geometry = new THREE.PlaneBufferGeometry(config.groundWidth, sliceDepth, 1);
+//const ground_geometry = new THREE.PlaneBufferGeometry(config.groundWidth, sliceDepth, 1);
+const ground_geometry = new THREE.BoxBufferGeometry(config.groundWidth, config.groundHeight, sliceDepth, 1);
 
 function drawRoad(canvas, ctx, index) {
     const w = config.roadPxWidth;
@@ -75,7 +126,8 @@ export function generateSlice(scene, index) {
     });
 
     const ground_mesh = new THREE.Mesh(ground_geometry, ground_material);
-    ground_mesh.rotation.x = -Math.PI / 2;
+    //ground_mesh.rotation.x = -Math.PI / 2;
+    ground_mesh.position.y = -config.groundHeight / 2;
     ground_mesh.position.z = spawningPosition + (index * sliceDepth);
     roadArray.push(ground_mesh);
     scene.add(ground_mesh);
