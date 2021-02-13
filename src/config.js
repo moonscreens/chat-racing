@@ -14,7 +14,7 @@ module.exports = {
 
 	emoteSize: 3,
 	emoteSpawnVariance: 12,
-	carSize: 6,
+	carSize: 8,
 
 	cameraHeight: 5,
 
