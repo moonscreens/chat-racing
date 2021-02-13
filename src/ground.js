@@ -4,9 +4,7 @@ const config = require('./config');
 
 const spawningPosition = -config.groundLength / 2;
 
-const startTime = Date.now();
-
-let roadPreset = 2;
+let roadPreset = 0;
 let roadChange = Date.now();
 const roadPresets = [
     'straight',
