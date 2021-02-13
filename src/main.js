@@ -32,6 +32,8 @@ const inversePixelRatio = 3; // How pixelated things are, 4 = 1 "pixel" takes up
 let camera, scene, renderer;
 const tickArray = [];
 
+tickArray.push(Car.tick);
+
 function resize() {
 	camera.aspect = 1920 / 1080;
 	camera.updateProjectionMatrix();

@@ -71,6 +71,7 @@ export function groundInit(scene, tickArray) {
                 slice.position.y = (-config.groundHeight / 2) + getHeightModifier();
             } else if (Math.round(slice.position.z) === Math.round(Car.position.z)) {
                 Car.position.y = slice.position.y + config.groundHeight / 2;
+                Car.baseX = slice.position.x;
             }
         }
     });

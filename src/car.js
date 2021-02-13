@@ -19,8 +19,20 @@ let complete = false;
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-function drawImage(image) {
-    ctx.drawImage(image, Math.round(canvas.width / 2 - image.width / 2), canvas.height - image.height);
+function drawImage(image, flipped = false) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const x = Math.round(canvas.width / 2 - image.width / 2);
+    ctx.save();
+    if (flipped) {
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(
+        image,
+        x,
+        canvas.height - image.height,
+    );
+    ctx.restore();
 }
 
 function checkLoaded() {
@@ -47,3 +59,32 @@ function checkLoaded() {
 }
 
 export const Car = new THREE.Group();
+Car.baseX = 0;
+let lastDigit = 0;
+
+Car.tick = (delta) => {
+    Car.position.x = Car.baseX + Math.sin(Date.now() / 4000) * config.emoteSpawnVariance;
+
+    const digit = Math.round(Car.position.x / (config.emoteSpawnVariance / 2));
+    if (lastDigit !== digit) {
+        lastDigit = digit;
+        switch (digit) {
+            case -2:
+                drawImage(carImage2, true);
+                break;
+            case -1:
+                drawImage(carImage1, true);
+                break;
+            case 1:
+                drawImage(carImage1, false);
+                break;
+            case 2:
+                drawImage(carImage2, false);
+                break;
+            default:
+                drawImage(carImage0, false);
+                break;
+        }
+        texture.needsUpdate = true;
+    }
+}
