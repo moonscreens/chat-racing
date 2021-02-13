@@ -54,6 +54,7 @@ function checkLoaded() {
         sprite.scale.x = (width / Math.max(width, height)) * config.carSize;
         sprite.scale.y = (height / Math.max(width, height)) * config.carSize;
         sprite.position.y = sprite.scale.y / 2;
+        sprite.defaultY = sprite.scale.y / 2;
         Car.add(sprite);
     }
 }
@@ -63,9 +64,11 @@ Car.baseX = 0;
 let lastDigit = 0;
 
 Car.tick = (delta) => {
-    Car.position.x = Car.baseX + Math.sin(Date.now() / 4000) * config.emoteSpawnVariance;
+    const sin = Math.sin(Date.now() / 4000) * config.emoteSpawnVariance;
+    Car.position.x = Car.baseX + sin;
+    sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1)/20;
 
-    const digit = Math.round(Car.position.x / (config.emoteSpawnVariance / 2));
+    const digit = Math.round(sin / (config.emoteSpawnVariance / 2));
     if (lastDigit !== digit) {
         lastDigit = digit;
         switch (digit) {
