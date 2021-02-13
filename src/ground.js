@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Car } from './car';
 const config = require('./config');
 
 const spawningPosition = -config.groundLength / 2;
@@ -68,6 +69,8 @@ export function groundInit(scene, tickArray) {
                 slice.position.z += spawningPosition;
                 slice.position.x = getPositionModifier();
                 slice.position.y = (-config.groundHeight / 2) + getHeightModifier();
+            } else if (Math.round(slice.position.z) === Math.round(Car.position.z)) {
+                Car.position.y = slice.position.y + config.groundHeight / 2;
             }
         }
     });

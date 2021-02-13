@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Chat from 'twitch-chat-emotes';
 import { groundInit, getPositionModifier, getHeightModifier } from './ground';
+import { Car } from './car';
 
 let channels = ['moonmoon'];
 const query_vars = {};
@@ -46,6 +47,10 @@ function init() {
 	//camera.lookAt(0, 0, 0);
 
 	scene = new THREE.Scene();
+
+	scene.add(Car);
+	Car.position.z = -config.cameraHeight * 4.5;
+	Car.position.y = 0;
 
 	renderer = new THREE.WebGLRenderer({ antialias: false });
 	window.addEventListener('resize', resize);
@@ -116,7 +121,7 @@ function createGroup(thing) {
 let lastFrame = Date.now();
 function draw() {
 	requestAnimationFrame(draw);
-	const delta = (Date.now() - lastFrame) / 1000;
+	const delta = Math.min((Date.now() - lastFrame) / 1000, 1);
 	lastFrame = Date.now();
 
 	for (let index = 0; index < tickArray.length; index++) {

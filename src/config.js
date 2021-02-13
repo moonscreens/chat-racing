@@ -1,7 +1,7 @@
 module.exports = {
 	groundWidth: 480 * 2, //ThreeJS units, how wide the ground is
-	groundLength: 350, //ThreeJS units, how far the ground extends
-	groundSlices: 100, //The depth resolution of the ground
+	groundLength: 350 * 2, //ThreeJS units, how far the ground extends
+	groundSlices: 100 * 2, //The depth resolution of the ground
 	groundHeight: 10,
 
 	groundResolutionX: 480 * 2,
@@ -14,6 +14,7 @@ module.exports = {
 
 	emoteSize: 3,
 	emoteSpawnVariance: 12,
+	carSize: 6,
 
 	cameraHeight: 5,
 
