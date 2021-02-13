@@ -143,6 +143,21 @@ function draw() {
 		if (element.position.z > 0) {
 			scene.remove(element);
 			emotes.splice(index, 1);
+		} else if (
+			element.dying === undefined &&
+			element.position.z > Car.position.z - Car.scale.y * 4 &&
+			element.position.z < Car.position.z &&
+			element.position.x < Car.position.x + Car.scale.x * 4 &&
+			element.position.x > Car.position.x - Car.scale.x * 4
+		) {
+			element.dying = Date.now();
+			//element.rotation.z = Math.PI / 2
+			element.startY = element.position.y;
+		} else if (element.dying) {
+			element.position.y = element.startY + (
+				(Math.sin(((Date.now() - element.dying) / config.emoteDeathLength) * Math.PI) / 2) *
+				config.emoteDeathArc * config.emoteSize
+			);
 		}
 	}
 

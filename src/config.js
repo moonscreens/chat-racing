@@ -14,6 +14,8 @@ module.exports = {
 
 	emoteSize: 3,
 	emoteSpawnVariance: 12,
+	emoteDeathLength: 1000, // How long the emotes will fly up before dying in milliseconds
+	emoteDeathArc: 10, //a multiple of the emotes size, how high the emote will fly
 	carSize: 8,
 
 	cameraHeight: 5,
