@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Chat from 'twitch-chat-emotes';
 import { groundInit, getPositionModifier, getHeightModifier } from './ground';
 import { Car } from './car';
+const config = require('./config');
 
 let channels = ['moonmoon'];
 const query_vars = {};
@@ -24,8 +25,6 @@ const pendingEmoteArray = [];
 const emotes = [];
 
 const initScene = require('./scene');
-
-const config = require('./config');
 
 const inversePixelRatio = 3; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
 
