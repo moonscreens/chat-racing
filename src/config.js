@@ -8,7 +8,7 @@ module.exports = {
 	groundResolutionY: 1,
 	roadPresetDuration: 30000,
 	roadPresetEasing: 5000,
-	roadPxWidth: 30,
+	roadPxWidth: 38,
 
 	speedMultiplier: 50,
 
