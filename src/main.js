@@ -145,14 +145,24 @@ function draw() {
 			emotes.splice(index, 1);
 		} else if (
 			element.dying === undefined &&
+			element.dead === undefined &&
 			element.position.z > Car.position.z - Car.scale.y * 4 &&
 			element.position.z < Car.position.z &&
 			element.position.x < Car.position.x + Car.scale.x * 4 &&
 			element.position.x > Car.position.x - Car.scale.x * 4
 		) {
+			if (Math.random() > 0.9) {
 			element.dying = Date.now();
-			//element.rotation.z = Math.PI / 2
 			element.startY = element.position.y;
+			} else {
+				element.dead = true;
+				element.rotation.z = Math.PI / 2;
+				element.position.y -= config.emoteSize / 3;
+				for (let i = 0; i < element.children.length; i++) {
+					element.children[i].material = element.children[i].material.clone();
+					element.children[i].material.rotation = Math.PI / 2;
+				}
+			}
 		} else if (element.dying) {
 			element.position.y = element.startY + (
 				(Math.sin(((Date.now() - element.dying) / config.emoteDeathLength) * Math.PI) / 2) *
