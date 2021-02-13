@@ -23,7 +23,7 @@ module.exports = function (scene, tickArray) {
 		cloud.position.x = (Math.random() - 0.5) * 2 * config.groundWidth;
 		cloud.scale.setScalar(100);
 		cloud.scale.x *= 2.25;
-	}, 100);
+	}, 200);
 
 	tickArray.push((delta) => {
 		for (let index = clouds.length-1; index >= 0; index--) {
