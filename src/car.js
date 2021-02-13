@@ -68,7 +68,7 @@ Car.tick = (delta) => {
     Car.position.x = Car.baseX + sin;
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1)/20;
 
-    const digit = Math.round(sin / (config.emoteSpawnVariance / 2));
+    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 2))));
     if (lastDigit !== digit) {
         lastDigit = digit;
         switch (digit) {

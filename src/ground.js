@@ -35,7 +35,7 @@ export function getPositionModifier() {
     switch (roadPresets[roadPreset]) {
         case 'wavy':
             return (
-                Math.sin(Date.now() / 750) * 15
+                Math.sin(Date.now() / 750) * 5
             ) * getRoadPresetProgress();
             break;
         default:
