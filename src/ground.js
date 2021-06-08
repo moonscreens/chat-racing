@@ -4,13 +4,14 @@ const config = require('./config');
 
 const spawningPosition = -config.groundLength / 2;
 
-let roadPreset = 0;
 let roadChange = Date.now();
 const roadPresets = [
     'straight',
     'wavy',
     'bumpy',
+    'wavybumpy',
 ];
+let roadPreset = Math.floor(Math.random()*roadPresets.length);
 
 setInterval(() => {
     roadPreset = Math.floor(Math.random() * roadPresets.length);
@@ -36,6 +37,11 @@ export function getPositionModifier() {
                 Math.sin(Date.now() / 750) * 5
             ) * getRoadPresetProgress();
             break;
+        case 'wavybumpy':
+            return (
+                Math.sin(Date.now() / 750) * 5
+            ) * getRoadPresetProgress();
+            break;
         default:
             return 0;
     }
@@ -43,6 +49,13 @@ export function getPositionModifier() {
 export function getHeightModifier() {
     switch (roadPresets[roadPreset]) {
         case 'bumpy':
+            return (
+                (
+                    Math.sin(Date.now() / 500) / 2 + 0.5
+                ) * -config.groundHeight
+            ) * getRoadPresetProgress();
+            break;
+        case 'wavybumpy':
             return (
                 (
                     Math.sin(Date.now() / 500) / 2 + 0.5
