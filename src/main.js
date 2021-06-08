@@ -150,6 +150,7 @@ function draw() {
 			element.position.x < Car.position.x + Car.scale.x * 4 &&
 			element.position.x > Car.position.x - Car.scale.x * 4
 		) {
+			Car.bump();
 			if (Math.random() > 0.9) {
 			element.dying = Date.now();
 			element.startY = element.position.y;

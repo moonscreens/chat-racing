@@ -66,7 +66,16 @@ let lastDigit = 0;
 Car.tick = (delta) => {
     const sin = Math.sin(Date.now() / 4000) * config.emoteSpawnVariance;
     Car.position.x = Car.baseX + sin;
-    sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1)/20;
+    sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
+
+    let bumpProg = (Date.now() - lastBump) / bumpDuration;
+    let bumpMult = 1;
+    if (bumpProg >= 2) bumpProg = 0;
+    else if (bumpProg >= 1) {
+        bumpProg = 2 - bumpProg;
+        bumpMult = 0.5;
+    };
+    sprite.position.y += Math.sin(bumpProg * Math.PI) * bumpMult * 0.5;
 
     const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 2))));
     if (lastDigit !== digit) {
@@ -90,4 +99,10 @@ Car.tick = (delta) => {
         }
         texture.needsUpdate = true;
     }
+}
+
+let lastBump = 0;
+const bumpDuration = 125;
+Car.bump = function () {
+    lastBump = Date.now();
 }
