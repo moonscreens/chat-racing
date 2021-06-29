@@ -34,13 +34,13 @@ const tickArray = [];
 tickArray.push(Car.tick);
 
 function resize() {
-	camera.aspect = 1920 / 1080;
+	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize(Math.round(1920 / inversePixelRatio), Math.round(1080 / inversePixelRatio));
+	renderer.setSize(Math.round(window.innerWidth / inversePixelRatio), Math.round(window.innerHeight / inversePixelRatio));
 }
 
 function init() {
-	camera = new THREE.PerspectiveCamera(70, 1920 / 1080, 1, config.groundLength * 2);
+	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, config.groundLength * 2);
 	camera.position.x = 0;
 	camera.position.y = config.cameraHeight;
 	camera.position.z = 0;
