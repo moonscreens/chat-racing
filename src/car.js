@@ -63,8 +63,10 @@ export const Car = new THREE.Group();
 Car.baseX = 0;
 let lastDigit = 0;
 
+const carWave = config.emoteSpawnVariance / 2;
+
 Car.tick = (delta) => {
-    const sin = Math.sin(Date.now() / 4000) * config.emoteSpawnVariance;
+    const sin = Math.sin(Date.now() / 2000) * carWave;
     Car.position.x = Car.baseX + sin;
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
 
