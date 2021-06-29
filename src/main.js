@@ -26,7 +26,7 @@ const emotes = [];
 
 const initScene = require('./scene');
 
-const inversePixelRatio = 2; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
+const inversePixelRatio = 1; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
 
 let camera, scene, renderer;
 const tickArray = [];
@@ -152,8 +152,8 @@ function draw() {
 		) {
 			Car.bump();
 			if (Math.random() > 0.9) {
-			element.dying = Date.now();
-			element.startY = element.position.y;
+				element.dying = Date.now();
+				element.startY = element.position.y;
 			} else {
 				element.dead = true;
 				element.rotation.z = Math.PI / 2;
