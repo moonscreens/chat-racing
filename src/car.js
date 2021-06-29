@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import config from './config';
+import { easeInOutElastic } from 'js-easing-functions';
 const carImage0 = new Image();
 carImage0.src = require('./lenny-car.png');
 
@@ -63,11 +64,27 @@ export const Car = new THREE.Group();
 Car.baseX = 0;
 let lastDigit = 0;
 
-const carWave = config.emoteSpawnVariance / 2;
+const carHorizontalVariance = config.emoteSpawnVariance / 2;
+let lastLaneChange = Date.now();
+let laneChangeSpeed = 8000;
+let laneChangeInterval = 15000;
+let lane = 1;
+let position = 0;
+
 
 Car.tick = (delta) => {
-    const sin = Math.sin(Date.now() / 2000) * carWave;
-    Car.position.x = Car.baseX + sin;
+    if (Date.now() - lastLaneChange > laneChangeInterval) {
+        lane *= -1;
+        lastLaneChange = Date.now();
+    }
+    if (Date.now() - lastLaneChange < laneChangeSpeed) {
+        position = easeInOutElastic(Date.now() - lastLaneChange, lane * -1, lane * 2, laneChangeSpeed);
+    } else {
+        position = lane;
+    }
+
+
+    Car.position.x = Car.baseX + (position * carHorizontalVariance);
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
 
     let bumpProg = (Date.now() - lastBump) / bumpDuration;
