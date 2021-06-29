@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import config from './config';
 const carImage0 = new Image();
-carImage0.src = require('./car.png');
+carImage0.src = require('./lenny-car.png');
 
 const carImage1 = new Image();
-carImage1.src = require('./car-turn-1.png');
+carImage1.src = require('./lenny-car-turn-1.png');
 
 const carImage2 = new Image();
-carImage2.src = require('./car-turn-2.png');
+carImage2.src = require('./lenny-car-turn-2.png');
 
 
 carImage0.addEventListener('load', checkLoaded);

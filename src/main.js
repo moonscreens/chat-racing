@@ -26,7 +26,7 @@ const emotes = [];
 
 const initScene = require('./scene');
 
-const inversePixelRatio = 3; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
+const inversePixelRatio = 2; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
 
 let camera, scene, renderer;
 const tickArray = [];
