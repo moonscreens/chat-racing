@@ -62,23 +62,23 @@ function init() {
 	groundInit(scene, tickArray);
 
 
-	ChatInstance.on("emotes", (e) => {
+	ChatInstance.on("emotes", (emotes) => {
 		const output = [];
-		for (let index = 0; index < e.emotes.length; index++) {
-			const emote = e.emotes[index];
+		for (let index = 0; index < emotes.length; index++) {
+			const emote = emotes[index];
 
-			if (!emoteTextures[emote.material.id]) {
-				emoteTextures[emote.material.id] = new THREE.CanvasTexture(emote.material.canvas);
-				emoteTextures[emote.material.id].magFilter = THREE.NearestFilter;
-				emoteTextures[emote.material.id].minFilter = THREE.NearestFilter;
+			if (!emoteTextures[emote.gif.id]) {
+				emoteTextures[emote.gif.id] = new THREE.CanvasTexture(emote.gif.canvas);
+				emoteTextures[emote.gif.id].magFilter = THREE.NearestFilter;
+				emoteTextures[emote.gif.id].minFilter = THREE.NearestFilter;
 
-				emoteMaterials[emote.material.id] = new THREE.SpriteMaterial({
-					map: emoteTextures[emote.material.id],
+				emoteMaterials[emote.gif.id] = new THREE.SpriteMaterial({
+					map: emoteTextures[emote.gif.id],
 				});
 			}
-			emote.texture = emoteTextures[emote.material.id];
+			emote.texture = emoteTextures[emote.gif.id];
 
-			output.push(new THREE.Sprite(emoteMaterials[emote.material.id]));
+			output.push(new THREE.Sprite(emoteMaterials[emote.gif.id]));
 		}
 		pendingEmoteArray.push(output);
 	});

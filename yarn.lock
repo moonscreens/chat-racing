@@ -3373,7 +3373,7 @@ node-addon-api@^1.7.1:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.7.2.tgz#3df30b95720b53c24e59948b49532b662444f54d"
   integrity sha512-ibPK3iA+vaY1eEjESkQkM0BbCqFOaZMiXRTtdB0u7b4djtY6JnsjvPdUHVMg6xQt3B8fpTTWHI9A+ADjM9frzg==
 
-node-fetch@2.6.1:
+node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
@@ -4918,13 +4918,13 @@ tiny-inflate@^1.0.0:
   resolved "https://registry.yarnpkg.com/tiny-inflate/-/tiny-inflate-1.0.3.tgz#122715494913a1805166aaf7c93467933eea26c4"
   integrity sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==
 
-tmi.js@^1.5.0:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/tmi.js/-/tmi.js-1.7.1.tgz#dbd250e49a35ad238eec29bd2237c8efe4db6555"
-  integrity sha512-QCGDjVT0i8GZ99paBsaXDvd++A7PzW051S2BSXClMni5gDj5wUV6+YIZAwUtLkvbR/lD9QlqjNJloCNuFYGo+A==
+tmi.js@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/tmi.js/-/tmi.js-1.8.3.tgz#1a4e30c845442505e6f673d0da8740bbd39c4ed6"
+  integrity sha512-1YAO3hwnkpAbUfVlpxcqOHP4Nun/+TqxWE/e/ZKMB6p40ZKczhI03oZW2Qx3pppqWjXz5kSjHdT/vTTfi2gCGQ==
   dependencies:
-    node-fetch "2.6.1"
-    ws "7.4.0"
+    node-fetch "^2.6.1"
+    ws "^7.4.3"
 
 to-arraybuffer@^1.0.0:
   version "1.0.1"
@@ -5010,12 +5010,12 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twitch-chat-emotes@^0.1.32:
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/twitch-chat-emotes/-/twitch-chat-emotes-0.1.32.tgz#52a1b7f764be810fd4167da72bf53c3f5dc3333a"
-  integrity sha512-tBa69n5kw3vcNnHytaSM4EF9oatkO7BQvpWzeLGxUzfMDjv/7XaGh2VveUh1zDcpSvTXcM9x5ImN5MubZsSsEA==
+twitch-chat-emotes@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/twitch-chat-emotes/-/twitch-chat-emotes-0.2.1.tgz#74c58bfe6a4b65c12d3a9830d920ceab6b15a7e4"
+  integrity sha512-3z1p4+8wJdY2Pl+CBLcBJy1XsGkh3BlYiGS11LM0M+wUd/CJKh8u6S1+8xJOReITcw4ldTKupAtDw/DHJrladA==
   dependencies:
-    tmi.js "^1.5.0"
+    tmi.js "^1.8.3"
 
 type-check@~0.3.2:
   version "0.3.2"
@@ -5267,11 +5267,6 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-ws@7.4.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.0.tgz#a5dd76a24197940d4a8bb9e0e152bb4503764da7"
-  integrity sha512-kyFwXuV/5ymf+IXhS6f0+eAFvydbaBW3zjpT6hUdAh/hbVjTIB5EHBGi0bPoCLSK2wcuz3BrEkB9LrYv1Nm4NQ==
-
 ws@^5.1.1:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
@@ -5285,6 +5280,11 @@ ws@^6.1.2:
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
+
+ws@^7.4.3:
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.1.tgz#44fc000d87edb1d9c53e51fbc69a0ac1f6871d66"
+  integrity sha512-2c6faOUH/nhoQN6abwMloF7Iyl0ZS2E9HGtsiLrWn0zOOMWlhtDmdf/uihDt6jnuCxgtwGBNy6Onsoy2s2O2Ow==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
