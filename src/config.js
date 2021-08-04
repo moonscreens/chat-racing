@@ -1,5 +1,5 @@
 module.exports = {
-	groundWidth: 480 * 2, //ThreeJS units, how wide the ground is
+	groundWidth: 600 * 2, //ThreeJS units, how wide the ground is
 	groundLength: 350 * 3, //ThreeJS units, how far the ground extends
 	groundSlices: 100 * 3, //The depth resolution of the ground
 	groundHeight: 5,
@@ -13,7 +13,7 @@ module.exports = {
 	speedMultiplier: 50,
 
 	emoteSize: 3,
-	emoteSpawnVariance: 12,
+	emoteSpawnVariance: 16,
 	emoteDeathLength: 1000, // How long the emotes will fly up before dying in milliseconds
 	emoteDeathArc: 10, //a multiple of the emotes size, how high the emote will fly
 	carSize: 8,
