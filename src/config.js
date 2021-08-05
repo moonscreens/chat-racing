@@ -31,6 +31,7 @@ module.exports = {
 		sky_blue: '#5ADBFF',
 		desert: {
 			ground: '#F6F5AE',
-		}
+			ground2: '#E8E69B',
+		},
 	}
 }
