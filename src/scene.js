@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import generateCloud from './cloud';
 
-const config = require('./config');
+import config from './config';
 
 const clouds = [];
 
-module.exports = function (scene, tickArray) {
+export default function (scene, tickArray) {
 
 	setInterval(() => {
 		const cloudCanvas = generateCloud(300, 100);

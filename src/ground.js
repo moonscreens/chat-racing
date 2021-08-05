@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Car } from './car';
-const config = require('./config');
+import config from './config';
 
 const spawningPosition = -config.groundLength / 2;
 

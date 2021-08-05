@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	groundWidth: 600 * 2, //ThreeJS units, how wide the ground is
 	groundLength: 350 * 3, //ThreeJS units, how far the ground extends
 	groundSlices: 100 * 3, //The depth resolution of the ground

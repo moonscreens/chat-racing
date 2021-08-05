@@ -1,14 +1,17 @@
 import * as THREE from 'three';
 import config from './config';
 import { easeInOutElastic } from 'js-easing-functions';
+
+import carImageSrc from './car.png';
+import carImage1Src from './car-turn-1.png';
+import carImage2Src from './car-turn-2.png';
+
 const carImage0 = new Image();
-carImage0.src = require('./car.png');
-
+carImage0.src = carImageSrc;
 const carImage1 = new Image();
-carImage1.src = require('./car-turn-1.png');
-
+carImage1.src = carImage1Src;
 const carImage2 = new Image();
-carImage2.src = require('./car-turn-2.png');
+carImage2.src = carImage2Src;
 
 
 carImage0.addEventListener('load', checkLoaded);
@@ -73,6 +76,7 @@ let position = 0;
 let nextChange = 0;
 
 Car.tick = (delta) => {
+    if (!sprite) return;
     if (Date.now() - lastLaneChange > nextChange) {
         lane *= -1;
         lastLaneChange = Date.now();

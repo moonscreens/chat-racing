@@ -1,8 +1,9 @@
+import './main.css'
 import * as THREE from 'three';
 import Chat from 'twitch-chat-emotes';
 import { groundInit, getPositionModifier, getHeightModifier } from './ground';
 import { Car } from './car';
-const config = require('./config');
+import config from './config';
 
 let channels = ['moonmoon'];
 const query_vars = {};
@@ -25,7 +26,7 @@ const pendingEmoteArray = [];
 const emotes = [];
 window.biome = undefined;
 
-const initScene = require('./scene');
+import initScene from './scene';
 
 const inversePixelRatio = 1; // How pixelated things are, 4 = 1 "pixel" takes up 4 real pixels
 
@@ -87,8 +88,9 @@ function init() {
 	draw();
 }
 
+import streetsignurl from './streetsign.png';
 const streetSignDecoration = {
-	imageUrl: require('./streetsign.png'),
+	imageUrl: streetsignurl,
 	interval: 20000,
 	intervalVariance: 0,
 	spawnDistanceMultiplier: 0,
@@ -124,7 +126,7 @@ setInterval(() => {
 	///change to random biome
 	const keys = Object.keys(biomes);
 	let lastBiome = window.biome;
-	while (window.biome === lastBiome){
+	while (window.biome === lastBiome) {
 		window.biome = keys[Math.floor(Math.random() * keys.length)];
 	}
 	console.log("switching to", window.biome);
