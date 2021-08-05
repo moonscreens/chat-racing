@@ -23,6 +23,7 @@ const emoteTextures = {};
 const emoteMaterials = {};
 const pendingEmoteArray = [];
 const emotes = [];
+let activeBiome = "desert";
 
 const initScene = require('./scene');
 
@@ -86,26 +87,46 @@ function init() {
 	draw();
 }
 
-const cactus_image = new Image();
-cactus_image.addEventListener('load', () => {
-	cactus_texture.needsUpdate = true;
-	cactus_material.needsUpdate = true;
-})
-cactus_image.src = require('./cacti.png');
-const cactus_texture = new THREE.Texture(cactus_image, undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
-const cactus_material = new THREE.SpriteMaterial({
-	map: cactus_texture,
-});
-setInterval(() => {
-	const group = createGroup();
-	const cactus = new THREE.Sprite(cactus_material);
-	group.add(cactus);
-	const x = Math.random() > 0.5 ? 1 : -1;
-	group.scale.setScalar(10);
-	group.position.y += 5;
-	group.position.x += (25 * x) + (Math.random() * config.emoteSpawnVariance * 10 * x);
-	scene.add(group);
-}, 100);
+const biomes = {
+	desert: {
+		decorations: [
+			{
+				imageUrl: require('./cacti.png'),
+				interval: 200,
+				intervalVariance: 0,
+				spawnDistanceMultiplier: 1,
+				size: 10,
+			},
+			{
+				imageUrl: require('./streetsign.png'),
+				interval: 20000,
+				intervalVariance: 0,
+				spawnDistanceMultiplier: 0,
+				size: 10,
+			}
+		],
+	}
+}
+
+for (const key in biomes) {
+	if (Object.hasOwnProperty.call(biomes, key)) {
+		const biome = biomes[key];
+		for (let index = 0; index < biome.decorations.length; index++) {
+			const deco = biome.decorations[index];
+			deco.image = new Image();
+			deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
+			deco.texture = new THREE.Texture(deco.image, undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
+			deco.material = new THREE.SpriteMaterial({
+				map: deco.texture,
+			});
+			deco.image.addEventListener('load', () => {
+				deco.material.needsUpdate = true;
+				deco.texture.needsUpdate = true;
+			});
+			deco.image.src = deco.imageUrl;
+		}
+	}
+}
 
 function createGroup(thing) {
 	const group = new THREE.Group();
@@ -184,6 +205,22 @@ function draw() {
 		group.position.x += (Math.random() - 0.5) * 2 * config.emoteSpawnVariance;
 	}
 	if (pendingEmoteArray.length > 0) pendingEmoteArray.splice(0, pendingEmoteArray.length);
+
+	for (let index = 0; index < biomes[activeBiome].decorations.length; index++) {
+		const deco = biomes[activeBiome].decorations[index];
+
+		if (Date.now() - deco.lastSpawn > deco.interval) {
+			deco.lastSpawn = Date.now();
+			const group = createGroup();
+			const sprite = new THREE.Sprite(deco.material);
+			group.add(sprite);
+			const x = Math.random() > 0.5 ? 1 : -1;
+			group.scale.setScalar(deco.size);
+			group.position.y += deco.size / 2;
+			group.position.x += (25 * x) + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
+			scene.add(group);
+		}
+	}
 
 	renderer.render(scene, camera);
 }
