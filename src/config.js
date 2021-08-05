@@ -33,5 +33,11 @@ module.exports = {
 			ground: '#F6F5AE',
 			ground2: '#E8E69B',
 		},
+		beach: {
+			ground: '#F6F5AE',
+			ground2: '#E8E69B',
+			ocean: '#3BD1D6',
+			ocean2: '#FFFFFF',
+		},
 	}
 }
