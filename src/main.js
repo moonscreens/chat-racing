@@ -94,7 +94,7 @@ const biomes = {
 				imageUrl: require('./cacti.png'),
 				interval: 200,
 				intervalVariance: 0,
-				spawnDistanceMultiplier: 1,
+				spawnDistanceMultiplier: 2,
 				size: 10,
 			},
 			{
