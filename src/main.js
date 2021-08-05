@@ -217,7 +217,7 @@ function draw() {
 			const x = Math.random() > 0.5 ? 1 : -1;
 			group.scale.setScalar(deco.size);
 			group.position.y += deco.size / 2;
-			group.position.x += (25 * x) + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
+			group.position.x += (25 * x + deco.size / 2) + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
 			scene.add(group);
 		}
 	}
