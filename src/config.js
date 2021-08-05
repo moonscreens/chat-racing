@@ -37,7 +37,7 @@ export default {
 		grass: {
 			canBeBumpy: true,
 			ground: '#00D374',
-			ground2: '#46DB93',
+			ground2: '#09C66E',
 		},
 		beach: {
 			canBeBumpy: false,

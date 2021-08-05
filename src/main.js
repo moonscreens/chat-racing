@@ -97,6 +97,7 @@ const streetSignDecoration = {
 	size: 10,
 }
 
+import treeUrl from './tree.png';
 import cactiUrl from './cacti.png';
 const biomes = {
 	desert: {
@@ -113,6 +114,13 @@ const biomes = {
 	},
 	grass: {
 		decorations: [
+			{
+				imageUrl: treeUrl,
+				interval: 20,
+				intervalVariance: 0,
+				spawnDistanceMultiplier: 2,
+				size: 40,
+			},
 			{ ...streetSignDecoration },
 		],
 	},
