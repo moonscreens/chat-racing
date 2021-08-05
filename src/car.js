@@ -68,14 +68,15 @@ const carHorizontalVariance = config.emoteSpawnVariance / 2;
 let lastLaneChange = Date.now();
 let laneChangeSpeed = 8000;
 let laneChangeInterval = 15000;
-let lane = 1;
+let lane = Math.random() < 0.5 ? 1 : -1;
 let position = 0;
-
+let nextChange = 0;
 
 Car.tick = (delta) => {
-    if (Date.now() - lastLaneChange > laneChangeInterval) {
+    if (Date.now() - lastLaneChange > nextChange) {
         lane *= -1;
         lastLaneChange = Date.now();
+        nextChange = (laneChangeInterval - laneChangeSpeed) * Math.random() + laneChangeSpeed;
     }
     if (Date.now() - lastLaneChange < laneChangeSpeed) {
         position = easeInOutElastic(Date.now() - lastLaneChange, lane * -1, lane * 2, laneChangeSpeed);
