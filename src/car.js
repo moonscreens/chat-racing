@@ -89,6 +89,7 @@ Car.tick = (delta) => {
     const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 4))));
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
 
+    // make car bump when you hit an emote
     let bumpProg = (Date.now() - lastBump) / bumpDuration;
     let bumpMult = 1;
     if (bumpProg >= 2) bumpProg = 0;
@@ -103,6 +104,7 @@ Car.tick = (delta) => {
 
     sprite.position.y += Math.sin(bumpProg * Math.PI) * bumpMult * 0.5;
 
+    // turn the car based on position relative to the camera
     if (lastDigit !== digit) {
         lastDigit = digit;
         switch (digit) {
