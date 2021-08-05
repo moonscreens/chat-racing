@@ -47,6 +47,9 @@ export function getPositionModifier() {
     }
 }
 export function getHeightModifier() {
+    if (!config.pallet[window.biome].canBeBumpy) {
+        return 0;
+    }
     switch (roadPresets[roadPreset]) {
         case 'bumpy':
             return (
@@ -77,6 +80,9 @@ export function groundInit(scene, tickArray) {
             const slice = roadArray[index];
             slice.position.z += delta * config.speedMultiplier;
             if (slice.position.z > 0) {
+                drawRoad(slice.canvas, slice.ctx, slice.roadIndex);
+                slice.material.map.needsUpdate = true;
+                slice.material.needsUpdate = true;
                 slice.position.z += spawningPosition;
                 slice.position.x = getPositionModifier();
                 slice.position.y = (-config.groundHeight / 2) + getHeightModifier();
@@ -97,13 +103,57 @@ const ground_geometry = new THREE.BoxBufferGeometry(config.groundWidth, config.g
 function drawRoad(canvas, ctx, index) {
     const w = config.roadPxWidth;
     const x = Math.round(canvas.width / 2 - w / 2);
+    switch (window.biome) {
+        case 'desert':
+            // draw the ground
+            ctx.fillStyle = config.pallet.desert.ground;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = config.pallet.desert.ground;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // draw the stripes
+            ctx.fillStyle = config.pallet.desert.ground2;
+            for (let index = 0; index < canvas.width; index += 20) {
+                ctx.fillRect(index, 0, 5, canvas.height);
+            }
+            break;
+        case 'grass':
+            // draw the ground
+            ctx.fillStyle = config.pallet.grass.ground;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = config.pallet.desert.ground2;
-    for (let index = 0; index < canvas.width; index += 20) {
-        ctx.fillRect(index, 0, 5, canvas.height);
+            // draw the stripes
+            ctx.fillStyle = config.pallet.grass.ground2;
+            for (let index = 0; index < canvas.width; index += 20) {
+                ctx.fillRect(index, 0, 5, canvas.height);
+            }
+            break;
+        case 'beach':
+            // draw the far side sand textures
+            ctx.fillStyle = config.pallet.desert.ground;
+            ctx.fillRect(0, 0, Math.floor(canvas.width / 2), canvas.height);
+
+            ctx.fillStyle = config.pallet.desert.ground2;
+            for (let index = 0; index < canvas.width / 2; index += 20) {
+                ctx.fillRect(index, 0, 5, canvas.height);
+            }
+
+            // draw the actual water
+            ctx.fillStyle = config.pallet.beach.ocean;
+            ctx.fillRect(Math.ceil(canvas.width / 2), 0, Math.ceil(canvas.width / 2), canvas.height);
+
+            // draw the sprays of water in the ocean
+            ctx.fillStyle = config.pallet.beach.ocean2;
+            for (let index = Math.floor(canvas.width / 2); index < canvas.width; index += 4) {
+                if (Math.random() > 0.9) ctx.fillRect(index, 0, 1, canvas.height);
+            }
+
+            // draw the beach separating the ocean from the road
+            ctx.fillStyle = config.pallet.desert.ground;
+            ctx.fillRect(Math.floor(canvas.width / 2), 0, 35, canvas.height);
+            break;
+        default:
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            break;
     }
 
 
@@ -142,6 +192,9 @@ export function generateSlice(scene, index) {
     });
 
     const ground_mesh = new THREE.Mesh(ground_geometry, ground_material);
+    ground_mesh.canvas = canvas;
+    ground_mesh.roadIndex = index;
+    ground_mesh.ctx = ctx;
     //ground_mesh.rotation.x = -Math.PI / 2;
     ground_mesh.position.y = -config.groundHeight / 2;
     ground_mesh.position.z = spawningPosition + (index * sliceDepth);

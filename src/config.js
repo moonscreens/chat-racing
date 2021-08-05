@@ -30,14 +30,17 @@ module.exports = {
 
 		sky_blue: '#5ADBFF',
 		desert: {
+			canBeBumpy: true,
 			ground: '#F6F5AE',
 			ground2: '#E8E69B',
 		},
 		grass: {
+			canBeBumpy: true,
 			ground: '#00D374',
 			ground2: '#46DB93',
 		},
 		beach: {
+			canBeBumpy: false,
 			ground: '#F6F5AE',
 			ground2: '#E8E69B',
 			ocean: '#3BD1D6',

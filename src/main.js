@@ -23,7 +23,7 @@ const emoteTextures = {};
 const emoteMaterials = {};
 const pendingEmoteArray = [];
 const emotes = [];
-let activeBiome = "desert";
+window.biome = undefined;
 
 const initScene = require('./scene');
 
@@ -87,6 +87,14 @@ function init() {
 	draw();
 }
 
+const streetSignDecoration = {
+	imageUrl: require('./streetsign.png'),
+	interval: 20000,
+	intervalVariance: 0,
+	spawnDistanceMultiplier: 0,
+	size: 10,
+}
+
 const biomes = {
 	desert: {
 		decorations: [
@@ -97,16 +105,30 @@ const biomes = {
 				spawnDistanceMultiplier: 2,
 				size: 10,
 			},
-			{
-				imageUrl: require('./streetsign.png'),
-				interval: 20000,
-				intervalVariance: 0,
-				spawnDistanceMultiplier: 0,
-				size: 10,
-			}
+			{ ...streetSignDecoration },
 		],
-	}
+	},
+	grass: {
+		decorations: [
+			{ ...streetSignDecoration },
+		],
+	},
+	beach: {
+		decorations: [
+			{ ...streetSignDecoration },
+		],
+	},
 }
+
+setInterval(() => {
+	///change to random biome
+	const keys = Object.keys(biomes);
+	let lastBiome = window.biome;
+	while (window.biome === lastBiome){
+		window.biome = keys[Math.floor(Math.random() * keys.length)];
+	}
+	console.log("switching to", window.biome);
+}, config.roadPresetDuration * 3);
 
 for (const key in biomes) {
 	if (Object.hasOwnProperty.call(biomes, key)) {
@@ -206,8 +228,8 @@ function draw() {
 	}
 	if (pendingEmoteArray.length > 0) pendingEmoteArray.splice(0, pendingEmoteArray.length);
 
-	for (let index = 0; index < biomes[activeBiome].decorations.length; index++) {
-		const deco = biomes[activeBiome].decorations[index];
+	for (let index = 0; index < biomes[window.biome].decorations.length; index++) {
+		const deco = biomes[window.biome].decorations[index];
 
 		if (Date.now() - deco.lastSpawn > deco.interval) {
 			deco.lastSpawn = Date.now();
@@ -224,5 +246,7 @@ function draw() {
 
 	renderer.render(scene, camera);
 }
+
+if (window.biome === undefined) window.biome = Object.keys(biomes)[Math.floor(Math.random() * Object.keys(biomes).length)];
 
 window.addEventListener('load', init);
