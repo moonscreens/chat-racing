@@ -86,6 +86,7 @@ Car.tick = (delta) => {
 
 
     Car.position.x = Car.baseX + (position * carHorizontalVariance);
+    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 4))));
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
 
     let bumpProg = (Date.now() - lastBump) / bumpDuration;
@@ -95,9 +96,13 @@ Car.tick = (delta) => {
         bumpProg = 2 - bumpProg;
         bumpMult = 0.5;
     };
+
+    if (Math.abs(digit) >= 2) { // Jiggle when we're far from the center
+        sprite.position.y += Math.cos(Date.now() / 50) * 0.05;
+    }
+
     sprite.position.y += Math.sin(bumpProg * Math.PI) * bumpMult * 0.5;
 
-    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 4))));
     if (lastDigit !== digit) {
         lastDigit = digit;
         switch (digit) {
