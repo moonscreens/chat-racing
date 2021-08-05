@@ -90,20 +90,33 @@ function init() {
 
 import streetsignurl from './streetsign.png';
 const streetSignDecoration = {
-	imageUrl: streetsignurl,
+	imageUrl: [streetsignurl],
 	interval: 20000,
 	intervalVariance: 0,
 	spawnDistanceMultiplier: 0,
 	size: 10,
 }
 
+const cliffDefault = {
+	interval: 100,
+	side: 'left',
+	intervalVariance: 0,
+	spawnDistanceMultiplier: 0,
+	size: 65,
+}
+
 import treeUrl from './tree.png';
 import cactiUrl from './cacti.png';
+import cliffUrl from './cliff.png';
+import cliff2Url from './cliff2.png';
+import cliff3Url from './cliff3.png';
+import seagulUrl from './seagul.png';
+import boatUrl from './boat.png';
 const biomes = {
 	desert: {
 		decorations: [
 			{
-				imageUrl: cactiUrl,
+				imageUrl: [cactiUrl],
 				interval: 200,
 				intervalVariance: 0,
 				spawnDistanceMultiplier: 2,
@@ -115,7 +128,7 @@ const biomes = {
 	grass: {
 		decorations: [
 			{
-				imageUrl: treeUrl,
+				imageUrl: [treeUrl],
 				interval: 20,
 				intervalVariance: 0,
 				spawnDistanceMultiplier: 2,
@@ -126,7 +139,14 @@ const biomes = {
 	},
 	beach: {
 		decorations: [
-			{ ...streetSignDecoration },
+			{
+				imageUrl: [cliffUrl, cliff2Url, cliff3Url],
+				...cliffDefault
+			},
+			{
+				side: 'right',
+				...streetSignDecoration
+			},
 		],
 	},
 }
@@ -144,19 +164,34 @@ setInterval(() => {
 for (const key in biomes) {
 	if (Object.hasOwnProperty.call(biomes, key)) {
 		const biome = biomes[key];
-		for (let index = 0; index < biome.decorations.length; index++) {
-			const deco = biome.decorations[index];
-			deco.image = new Image();
+		for (let o = 0; o < biome.decorations.length; o++) {
+			const deco = biome.decorations[o];
+			deco.images = [];
+			deco.canvases = [];
+			deco.materials = [];
+			deco.textures = [];
 			deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
-			deco.texture = new THREE.Texture(deco.image, undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
-			deco.material = new THREE.SpriteMaterial({
-				map: deco.texture,
-			});
-			deco.image.addEventListener('load', () => {
-				deco.material.needsUpdate = true;
-				deco.texture.needsUpdate = true;
-			});
-			deco.image.src = deco.imageUrl;
+			for (let index = 0; index < deco.imageUrl.length; index++) {
+				const imageUrl = deco.imageUrl[index];
+				deco.images[index] = new Image();
+				deco.canvases[index] = document.createElement('canvas');
+				deco.textures[index] = new THREE.CanvasTexture(deco.canvases[index], undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
+				deco.materials[index] = new THREE.SpriteMaterial({
+					map: deco.textures[index],
+				});
+				deco.images[index].addEventListener('load', () => {
+					//fix threejs squishing images into squares
+					deco.canvases[index].width = Math.max(deco.images[index].width, deco.images[index].height)
+					deco.canvases[index].height = deco.canvases[index].width;
+					const ctx = deco.canvases[index].getContext('2d');
+					ctx.drawImage(deco.images[index], 0, deco.canvases[index].height - deco.images[index].height);
+
+					//update texture/material
+					deco.materials[index].needsUpdate = true;
+					deco.textures[index].needsUpdate = true;
+				});
+				deco.images[index].src = imageUrl;
+			}
 		}
 	}
 }
@@ -245,9 +280,12 @@ function draw() {
 		if (Date.now() - deco.lastSpawn > deco.interval) {
 			deco.lastSpawn = Date.now();
 			const group = createGroup();
-			const sprite = new THREE.Sprite(deco.material);
+			const sprite = new THREE.Sprite(deco.materials[Math.floor(Math.random() * deco.materials.length)]);
 			group.add(sprite);
-			const x = Math.random() > 0.5 ? 1 : -1;
+			let x = Math.random() > 0.5 ? 1 : -1;
+			if (deco.side === 'left') x = -1;
+			if (deco.side === 'right') x = 1;
+
 			group.scale.setScalar(deco.size);
 			group.position.y += deco.size / 2;
 			group.position.x += (25 + deco.size / 2) * x + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
