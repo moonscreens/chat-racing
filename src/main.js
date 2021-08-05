@@ -97,11 +97,12 @@ const streetSignDecoration = {
 	size: 10,
 }
 
+import cactiUrl from './cacti.png';
 const biomes = {
 	desert: {
 		decorations: [
 			{
-				imageUrl: require('./cacti.png'),
+				imageUrl: cactiUrl,
 				interval: 200,
 				intervalVariance: 0,
 				spawnDistanceMultiplier: 2,
