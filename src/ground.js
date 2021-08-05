@@ -11,7 +11,7 @@ const roadPresets = [
     'bumpy',
     'wavybumpy',
 ];
-let roadPreset = Math.floor(Math.random()*roadPresets.length);
+let roadPreset = Math.floor(Math.random() * roadPresets.length);
 
 setInterval(() => {
     roadPreset = Math.floor(Math.random() * roadPresets.length);
@@ -100,6 +100,11 @@ function drawRoad(canvas, ctx, index) {
 
     ctx.fillStyle = config.pallet.desert.ground;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = config.pallet.desert.ground2;
+    for (let index = 0; index < canvas.width; index += 20) {
+        ctx.fillRect(index, 0, 5, canvas.height);
+    }
 
 
     ctx.fillStyle = config.pallet.road;
