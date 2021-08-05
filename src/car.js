@@ -96,7 +96,7 @@ Car.tick = (delta) => {
     };
     sprite.position.y += Math.sin(bumpProg * Math.PI) * bumpMult * 0.5;
 
-    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 2))));
+    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 4))));
     if (lastDigit !== digit) {
         lastDigit = digit;
         switch (digit) {
