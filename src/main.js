@@ -238,7 +238,7 @@ let lastFrame = Date.now();
 function draw() {
 	if (stats) stats.begin();
 	requestAnimationFrame(draw);
-	const delta = Math.min((Date.now() - lastFrame) / 1000, 1);
+	const delta = (Date.now() - lastFrame) / 1000;
 	lastFrame = Date.now();
 
 	for (let index = 0; index < tickArray.length; index++) {
