@@ -1,5 +1,6 @@
 import './main.css'
 import * as THREE from 'three';
+import Stats from 'stats-js';
 import Chat from 'twitch-chat-emotes';
 import { groundInit, getPositionModifier, getHeightModifier } from './ground';
 import { Car } from './car';
@@ -16,8 +17,8 @@ if (query_vars.channels) {
 
 const ChatInstance = new Chat({
 	channels,
-	duplicateEmoteLimit: 1,
-	duplicateEmoteLimit_pleb: 0,
+	maximumEmoteLimit: 2,
+	duplicateEmoteLimit: 0,
 })
 
 const emoteTextures = {};
@@ -41,7 +42,14 @@ function resize() {
 	renderer.setSize(Math.round(window.innerWidth / inversePixelRatio), Math.round(window.innerHeight / inversePixelRatio));
 }
 
+let stats = null;
+
 function init() {
+	if (window.location.hostname === 'localhost') {
+		stats = new Stats();
+		document.body.appendChild(stats.dom);
+	}
+
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, config.groundLength * 2);
 	camera.position.x = 0;
 	camera.position.y = config.cameraHeight;
@@ -98,11 +106,13 @@ const streetSignDecoration = {
 }
 
 const cliffDefault = {
-	interval: 100,
+	interval: 200,
 	side: 'left',
 	intervalVariance: 0,
-	spawnDistanceMultiplier: 0,
+	spawnDistanceMultiplier: 0.05,
 	size: 65,
+	sequential: true,
+	index: 0,
 }
 
 import treeUrl from './tree.png';
@@ -147,6 +157,22 @@ const biomes = {
 				side: 'right',
 				...streetSignDecoration
 			},
+			{
+				imageUrl: [seagulUrl],
+				interval: 3000,
+				side: 'right',
+				intervalVariance: 0.5,
+				spawnDistanceMultiplier: 1,
+				size: 10,
+			},
+			{
+				imageUrl: [boatUrl],
+				interval: 3000,
+				side: 'right',
+				intervalVariance: 0.5,
+				spawnDistanceMultiplier: 1,
+				size: 50,
+			}
 		],
 	},
 }
@@ -210,6 +236,7 @@ function createGroup(thing) {
 
 let lastFrame = Date.now();
 function draw() {
+	if (stats) stats.begin();
 	requestAnimationFrame(draw);
 	const delta = Math.min((Date.now() - lastFrame) / 1000, 1);
 	lastFrame = Date.now();
@@ -280,7 +307,13 @@ function draw() {
 		if (Date.now() - deco.lastSpawn > deco.interval) {
 			deco.lastSpawn = Date.now();
 			const group = createGroup();
-			const sprite = new THREE.Sprite(deco.materials[Math.floor(Math.random() * deco.materials.length)]);
+			let mat = deco.materials[Math.floor(Math.random() * deco.materials.length)];
+			if (deco.sequential) {
+				mat = deco.materials[deco.index];
+				deco.index++;
+				if (deco.index >= deco.materials.length) deco.index = 0;
+			}
+			const sprite = new THREE.Sprite(mat);
 			group.add(sprite);
 			let x = Math.random() > 0.5 ? 1 : -1;
 			if (deco.side === 'left') x = -1;
@@ -294,6 +327,7 @@ function draw() {
 	}
 
 	renderer.render(scene, camera);
+	if (stats) stats.end();
 }
 
 if (window.biome === undefined) window.biome = Object.keys(biomes)[Math.floor(Math.random() * Object.keys(biomes).length)];
