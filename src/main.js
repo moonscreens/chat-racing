@@ -112,11 +112,18 @@ function createGroup(thing) {
 }
 
 let lastFrame = Date.now();
+let fastFrames = 0;
 function draw() {
 	if (stats) stats.begin();
-	requestAnimationFrame(draw);
-	const delta = (Date.now() - lastFrame) / 1000;
+
+	let delta = (Date.now() - lastFrame) / 1000;
 	lastFrame = Date.now();
+
+	if (fastFrames < 600) {
+		delta = 16 / 1000;
+		setTimeout(draw, 0);
+		fastFrames++;
+	} else requestAnimationFrame(draw);
 
 	for (let index = 0; index < tickArray.length; index++) {
 		tickArray[index](delta);
