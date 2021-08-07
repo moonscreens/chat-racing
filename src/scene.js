@@ -2,18 +2,20 @@ import * as THREE from 'three';
 import generateCloud from './cloud';
 
 import config from './config';
+import biomes from './biomes';
 
 const clouds = [];
 
 export default function (scene, tickArray) {
 
 	setInterval(() => {
-		const cloudCanvas = generateCloud(300, 100);
+		const cloudCanvas = generateCloud(300, 100, biomes[window.biome].clouds.dark, biomes[window.biome].clouds.light);
 		const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
 		cloudTexture.magFilter = THREE.NearestFilter;
 		cloudTexture.minFilter = THREE.NearestFilter;
 		const material = new THREE.SpriteMaterial({
 			map: cloudTexture,
+			//blending: THREE.AdditiveBlending,
 		});
 		const cloud = new THREE.Sprite(material);
 		clouds.push(cloud);
@@ -50,8 +52,14 @@ export default function (scene, tickArray) {
 		mesh.rotation.x += delta;
 	});*/
 
-	scene.background = new THREE.Color(config.pallet.sky_blue);
-	scene.fog = new THREE.Fog(scene.background, config.groundLength * 0.35, config.groundLength *0.5);
+	//scene.background = new THREE.Color(config.pallet.sky_blue);
+	scene.fog = new THREE.Fog(biomes.grass.sky, config.groundLength * 0.35, config.groundLength *0.5);
+
+	window.addEventListener('biome-change', (event) => {
+		console.log(event);
+		scene.fog.color = new THREE.Color(biomes[window.biome].sky);
+		scene.background = new THREE.Color(biomes[window.biome].sky);
+	});
 
 
 	/*const ground_geometry = new THREE.PlaneBufferGeometry(config.groundWidth, config.groundLength, 1);

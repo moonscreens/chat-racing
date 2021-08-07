@@ -134,10 +134,10 @@ function drawRoad(canvas, ctx, index) {
             break;
         case 'beach':
             // draw the far side sand textures
-            ctx.fillStyle = config.pallet.desert.ground;
+            ctx.fillStyle = config.pallet.beach.ground;
             ctx.fillRect(0, 0, Math.floor(canvas.width / 2), canvas.height);
 
-            ctx.fillStyle = config.pallet.desert.ground2;
+            ctx.fillStyle = config.pallet.beach.ground2;
             for (let index = 0; index < canvas.width / 2; index += 20) {
                 ctx.fillRect(index, 0, 5, canvas.height);
             }
@@ -153,7 +153,7 @@ function drawRoad(canvas, ctx, index) {
             }
 
             // draw the beach separating the ocean from the road
-            ctx.fillStyle = config.pallet.desert.ground;
+            ctx.fillStyle = config.pallet.beach.ground;
             ctx.fillRect(Math.floor(canvas.width / 2), 0, 35, canvas.height);
             break;
         default:
