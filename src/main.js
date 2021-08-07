@@ -198,13 +198,13 @@ function draw() {
 				if (deco.index >= deco.materials.length) deco.index = 0;
 			}
 			const sprite = new THREE.Sprite(mat);
+			sprite.center.y = 0;
 			group.add(sprite);
 			let x = Math.random() > 0.5 ? 1 : -1;
 			if (deco.side === 'left') x = -1;
 			if (deco.side === 'right') x = 1;
 
 			group.scale.setScalar(deco.size);
-			group.position.y += deco.size / 2;
 			group.position.x += (25 + deco.size / 2) * x + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
 			scene.add(group);
 		}
