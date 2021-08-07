@@ -111,9 +111,14 @@ function drawRoad(canvas, ctx, index) {
 
             // draw the stripes
             ctx.fillStyle = config.pallet.desert.ground2;
-            for (let index = 0; index < canvas.width; index += 20) {
-                ctx.fillRect(index, 0, 5, canvas.height);
+            for (let i = 0; i < canvas.width; i += 20) {
+                ctx.fillRect(i + Math.round(Math.sin(index / 5) * 2), 0, 5, canvas.height);
             }
+
+            /*ctx.fillStyle = config.pallet.desert.ground2;
+            for (let index = 0; index < canvas.width; index += 4) {
+                if (Math.random() > 0.95) ctx.fillRect(index, 0, 1, canvas.height);
+            }*/
             break;
         case 'grass':
             // draw the ground
@@ -126,9 +131,9 @@ function drawRoad(canvas, ctx, index) {
             //    ctx.fillRect(index, 0, 5, canvas.height);
             //}
 
-            
+
             ctx.fillStyle = config.pallet.grass.ground2;
-            for (let index = 0; index < canvas.width; index ++) {
+            for (let index = 0; index < canvas.width; index++) {
                 if (Math.random() > 0.9) ctx.fillRect(index, 0, 1, canvas.height);
             }
             break;

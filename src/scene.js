@@ -7,9 +7,9 @@ import biomes from './biomes';
 const clouds = [];
 
 export default function (scene, tickArray) {
-	let targetColor = new THREE.Color(config.pallet.grass.sky);
-	let cloudDark = biomes.grass.clouds.darkColor;
-	let cloudLight = biomes.grass.clouds.lightColor;
+	let targetColor = new THREE.Color(config.pallet[window.biome].sky);
+	let cloudDark = biomes[window.biome].clouds.darkColor;
+	let cloudLight = biomes[window.biome].clouds.lightColor;
 
 	setInterval(() => {
 		const cloudCanvas = generateCloud(300, 100, '#'+cloudDark.getHex().toString(16), '#'+cloudLight.getHex().toString(16));
@@ -60,8 +60,8 @@ export default function (scene, tickArray) {
 		mesh.rotation.x += delta;
 	});*/
 
-	scene.background = new THREE.Color(targetColor);
-	scene.fog = new THREE.Fog(targetColor, config.groundLength * 0.35, config.groundLength * 0.5);
+	scene.background = targetColor.clone();
+	scene.fog = new THREE.Fog(targetColor.clone(), config.groundLength * 0.35, config.groundLength * 0.5);
 
 	window.addEventListener('biome-change', (event) => {
 		targetColor = new THREE.Color(biomes[window.biome].sky);
