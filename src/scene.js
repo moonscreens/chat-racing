@@ -7,9 +7,12 @@ import biomes from './biomes';
 const clouds = [];
 
 export default function (scene, tickArray) {
+	let targetColor = new THREE.Color(config.pallet.grass.sky);
+	let cloudDark = biomes.grass.clouds.darkColor;
+	let cloudLight = biomes.grass.clouds.lightColor;
 
 	setInterval(() => {
-		const cloudCanvas = generateCloud(300, 100, biomes[window.biome].clouds.dark, biomes[window.biome].clouds.light);
+		const cloudCanvas = generateCloud(300, 100, '#'+cloudDark.getHex().toString(16), '#'+cloudLight.getHex().toString(16));
 		const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
 		cloudTexture.magFilter = THREE.NearestFilter;
 		cloudTexture.minFilter = THREE.NearestFilter;
@@ -28,7 +31,7 @@ export default function (scene, tickArray) {
 	}, 100);
 
 	tickArray.push((delta) => {
-		for (let index = clouds.length-1; index >= 0; index--) {
+		for (let index = clouds.length - 1; index >= 0; index--) {
 			const cloud = clouds[index];
 			cloud.position.z += delta * config.speedMultiplier;
 			if (cloud.position.z > 0) {
@@ -36,6 +39,11 @@ export default function (scene, tickArray) {
 				clouds.splice(index, 1);
 			}
 		}
+
+		scene.background.lerp(targetColor, delta * 0.1);
+		scene.fog.color.lerp(targetColor, delta * 0.1);
+		cloudDark.lerp(biomes[window.biome].clouds.darkColor, delta * 0.1);
+		cloudLight.lerp(biomes[window.biome].clouds.lightColor, delta * 0.1);
 	});
 
 	//const geometry = new THREE.PlaneBufferGeometry(100, 100, 2);
@@ -52,13 +60,11 @@ export default function (scene, tickArray) {
 		mesh.rotation.x += delta;
 	});*/
 
-	//scene.background = new THREE.Color(config.pallet.sky_blue);
-	scene.fog = new THREE.Fog(biomes.grass.sky, config.groundLength * 0.35, config.groundLength *0.5);
+	scene.background = new THREE.Color(targetColor);
+	scene.fog = new THREE.Fog(targetColor, config.groundLength * 0.35, config.groundLength * 0.5);
 
 	window.addEventListener('biome-change', (event) => {
-		console.log(event);
-		scene.fog.color = new THREE.Color(biomes[window.biome].sky);
-		scene.background = new THREE.Color(biomes[window.biome].sky);
+		targetColor = new THREE.Color(biomes[window.biome].sky);
 	});
 
 

@@ -111,6 +111,8 @@ setInterval(() => {
 for (const key in biomes) {
     if (Object.hasOwnProperty.call(biomes, key)) {
         const biome = biomes[key];
+        biome.clouds.lightColor = new THREE.Color(biome.clouds.light);
+        biome.clouds.darkColor = new THREE.Color(biome.clouds.dark);
         for (let o = 0; o < biome.decorations.length; o++) {
             const deco = biome.decorations[o];
             deco.images = [];
