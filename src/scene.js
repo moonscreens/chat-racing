@@ -12,7 +12,7 @@ export default function (scene, tickArray) {
 	let cloudLight = biomes[window.biome].clouds.lightColor;
 
 	setInterval(() => {
-		const cloudCanvas = generateCloud(300, 100, '#'+cloudDark.getHex().toString(16), '#'+cloudLight.getHex().toString(16));
+		const cloudCanvas = generateCloud(350, 125, '#'+cloudDark.getHex().toString(16), '#'+cloudLight.getHex().toString(16));
 		const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
 		cloudTexture.magFilter = THREE.NearestFilter;
 		cloudTexture.minFilter = THREE.NearestFilter;

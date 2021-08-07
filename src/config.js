@@ -36,15 +36,15 @@ export default {
 		},
 		grass: {
 			canBeBumpy: true,
-			ground: '#00D374',
-			ground2: '#09C66E',
+			ground: '#699148',
+			ground2: '#7EA75B',
 		},
 		beach: {
 			canBeBumpy: false,
-			ground: '#F6F5AE',
+			ground: '#739F45',
 			ground2: '#E8E69B',
-			ocean: '#3BD1D6',
-			ocean2: '#FFFFFF',
+			ocean: '#659FDA',
+			ocean2: '#A0D2F5',
 		},
 	}
 }

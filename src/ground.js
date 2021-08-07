@@ -142,10 +142,6 @@ function drawRoad(canvas, ctx, index) {
             ctx.fillStyle = config.pallet.beach.ground;
             ctx.fillRect(0, 0, Math.floor(canvas.width / 2), canvas.height);
 
-            ctx.fillStyle = config.pallet.beach.ground2;
-            for (let index = 0; index < canvas.width / 2; index += 20) {
-                ctx.fillRect(index, 0, 5, canvas.height);
-            }
 
             // draw the actual water
             ctx.fillStyle = config.pallet.beach.ocean;
@@ -158,7 +154,7 @@ function drawRoad(canvas, ctx, index) {
             }
 
             // draw the beach separating the ocean from the road
-            ctx.fillStyle = config.pallet.beach.ground;
+            ctx.fillStyle = config.pallet.beach.ground2;
             ctx.fillRect(Math.floor(canvas.width / 2), 0, 35, canvas.height);
             break;
         default:

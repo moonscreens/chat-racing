@@ -9,17 +9,11 @@ const streetSignDecoration = {
     size: 10,
 }
 
-const cliffDefault = {
-    interval: 200,
-    side: 'left',
-    intervalVariance: 0,
-    spawnDistanceMultiplier: 0.05,
-    size: 65,
-    sequential: true,
-    index: 0,
-}
-
 import treeUrl from './tree.png';
+import tree2Url from './tree2.png';
+import rockUrl from './rock.png';
+import rock2Url from './rock2.png';
+import rock3Url from './rock3.png';
 import cactiUrl from './cacti.png';
 import cliffUrl from './cliff.png';
 import cliff2Url from './cliff2.png';
@@ -31,8 +25,8 @@ const biomes = {
     desert: {
         sky: '#7EBDFC',
         clouds: {
-            light: '#FEFEFE',
-            dark: '#C1E0FE',
+            light: '#F8F8F8',
+            dark: '#BCE0DB',
         },
         decorations: [
             {
@@ -42,28 +36,43 @@ const biomes = {
                 spawnDistanceMultiplier: 2,
                 size: 10,
             },
+            {
+                imageUrl: [cactiUrl],
+                interval: 200,
+                intervalVariance: 0,
+                spawnDistanceMultiplier: 2,
+                size: 256,
+            },
             { ...streetSignDecoration },
         ],
     },
     grass: {
-        sky: '#5BDBFF',
+        sky: '#8BC7C8',
         clouds: {
-            light: '#FFFFFF',
-            dark: '#DFF8FF',
+            light: '#DEF7E9',
+            dark: '#A9CEE5',
         },
         decorations: [
             {
-                imageUrl: [treeUrl],
-                interval: 20,
+                imageUrl: [treeUrl, treeUrl, treeUrl, tree2Url],
+                interval: 30,
+                intervalVariance: 0,
+                spawnDistanceMultiplier: 1.5,
+                size: 200,
+            },
+            {
+                imageUrl: [rockUrl, rock2Url, rock3Url],
+                interval: 50,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
+                sequential: true,
                 size: 40,
             },
             { ...streetSignDecoration },
         ],
     },
     beach: {
-        sky: '#FFB9C3',
+        sky: '#87C4F1',
         clouds: {
             light: '#E0ECFC',
             dark: '#9FBCE6',
@@ -71,7 +80,12 @@ const biomes = {
         decorations: [
             {
                 imageUrl: [cliffUrl, cliff2Url, cliff3Url],
-                ...cliffDefault
+                interval: 200,
+                side: 'left',
+                intervalVariance: 0,
+                spawnDistanceMultiplier: 0.05,
+                size: 65,
+                sequential: true,
             },
             {
                 side: 'right',
@@ -115,6 +129,7 @@ for (const key in biomes) {
         biome.clouds.darkColor = new THREE.Color(biome.clouds.dark);
         for (let o = 0; o < biome.decorations.length; o++) {
             const deco = biome.decorations[o];
+            deco.index = 0;
             deco.images = [];
             deco.canvases = [];
             deco.materials = [];
@@ -122,24 +137,41 @@ for (const key in biomes) {
             deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
             for (let index = 0; index < deco.imageUrl.length; index++) {
                 const imageUrl = deco.imageUrl[index];
-                deco.images[index] = new Image();
+                console.log(imageUrl);
+
+                if (typeof imageUrl === 'string') deco.images[index] = new Image();
+                else deco.images[index] = imageUrl;
+
                 deco.canvases[index] = document.createElement('canvas');
                 deco.textures[index] = new THREE.CanvasTexture(deco.canvases[index], undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
                 deco.materials[index] = new THREE.SpriteMaterial({
                     map: deco.textures[index],
                 });
-                deco.images[index].addEventListener('load', () => {
+
+                const postProcess = () => {
                     //fix threejs squishing images into squares
-                    deco.canvases[index].width = Math.max(deco.images[index].width, deco.images[index].height)
+                    deco.canvases[index].width = Math.max(deco.images[index].width, deco.images[index].height);
                     deco.canvases[index].height = deco.canvases[index].width;
                     const ctx = deco.canvases[index].getContext('2d');
-                    ctx.drawImage(deco.images[index], 0, deco.canvases[index].height - deco.images[index].height);
+                    ctx.drawImage(deco.images[index], Math.round(deco.canvases[index].width / 2 - deco.images[index].width / 2), deco.canvases[index].height - deco.images[index].height);
 
                     //update texture/material
                     deco.materials[index].needsUpdate = true;
                     deco.textures[index].needsUpdate = true;
-                });
-                deco.images[index].src = imageUrl;
+                }
+
+                if (typeof imageUrl === 'string') {
+                    deco.images[index].addEventListener('load', () => {
+                        postProcess();
+
+                        //update texture/material
+                        deco.materials[index].needsUpdate = true;
+                        deco.textures[index].needsUpdate = true;
+                    });
+                    deco.images[index].src = imageUrl;
+                } else {
+                    postProcess();
+                }
             }
         }
     }
