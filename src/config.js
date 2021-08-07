@@ -31,8 +31,8 @@ export default {
 		sky_blue: '#5ADBFF',
 		desert: {
 			canBeBumpy: true,
-			ground: '#A95610',
-			ground2: '#60270A',
+			ground: '#ECE7D3',
+			ground2: '#D7B39A',
 		},
 		grass: {
 			canBeBumpy: true,

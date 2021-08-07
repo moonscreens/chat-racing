@@ -29,10 +29,10 @@ import boatUrl from './boat.png';
 
 const biomes = {
     desert: {
-        sky: '#F8BD91',
+        sky: '#D0DCFC',
         clouds: {
-            light: '#F2DDB0',
-            dark: '#957A65',
+            light: '#ECF7FF',
+            dark: '#C2D8E7',
         },
         decorations: [
             {
