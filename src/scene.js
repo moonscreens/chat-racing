@@ -40,10 +40,10 @@ export default function (scene, tickArray) {
 			}
 		}
 
-		scene.background.lerp(targetColor, delta * 0.1);
-		scene.fog.color.lerp(targetColor, delta * 0.1);
-		cloudDark.lerp(biomes[window.biome].clouds.darkColor, delta * 0.1);
-		cloudLight.lerp(biomes[window.biome].clouds.lightColor, delta * 0.1);
+		scene.background.lerp(targetColor, delta * 0.2);
+		scene.fog.color.lerp(targetColor, delta * 0.2);
+		cloudDark.lerp(biomes[window.biome].clouds.darkColor, delta * 0.2);
+		cloudLight.lerp(biomes[window.biome].clouds.lightColor, delta * 0.2);
 	});
 
 	//const geometry = new THREE.PlaneBufferGeometry(100, 100, 2);
