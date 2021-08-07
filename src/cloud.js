@@ -34,6 +34,14 @@ const fragmentShaderID = shader(`#version 300 es
 	uniform float height;
 	uniform float u_time;
 
+	uniform float dark_red;
+	uniform float dark_green;
+	uniform float dark_blue;
+
+	uniform float light_red;
+	uniform float light_green;
+	uniform float light_blue;
+
 	uint fast_hash(in uint x, in uint y) {
 		x *= W0;
 		y *= W1;
@@ -95,14 +103,15 @@ const fragmentShaderID = shader(`#version 300 es
 		float freq = 1.5;
 		float cloud_height = cloud_noise(fragCoord / vec2(width, height), freq, 0., mod(u_time / morph_time, 1.0));
 		float other = cloud_noise((fragCoord - light_dir.xy) / vec2(width, height), freq, 0., mod(u_time / morph_time, 1.0));
-		float brightness = mix(0.8, 1.0, ceil(other - cloud_height));
+		float brightness = mix(0.0001, 1.0, ceil(other - cloud_height));
 		
-		vec3 sky = vec3(0.3529, 0.8588, 1.0);
+		vec3 dark_color = vec3(dark_red, dark_green, dark_blue);
+		vec3 light_color = vec3(light_red, light_green, light_blue);
 		
 		cloud_height = min(ceil(max(cloud_height, 0.0)), 1.0);
 		
-		vec4 outputVec = vec4(mix(vec3(0., 0., 0.), mix(sky, vec3(1.0), brightness), cloud_height), 1.);
-		if (outputVec.x == 0.) {
+		vec4 outputVec = vec4(mix(vec3(0., 0., 0.), mix(dark_color, light_color, brightness), cloud_height), 1.);
+		if (outputVec.x == 0. && outputVec.y == 0. && outputVec.z == 0.) {
 			outputVec = vec4(0.,0.,0.,0.);
 		}
 		fragColor = outputVec;
@@ -118,7 +127,17 @@ if (window.location.hostname.match(/localhost/)) {
 		console.error(gl.getShaderInfoLog(fragmentShaderID));
 	}
 }
-function fillMe(canvas) {
+
+function hexToRgb(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+		r: parseInt(result[1], 16),
+		g: parseInt(result[2], 16),
+		b: parseInt(result[3], 16)
+	} : null;
+}
+
+function fillMe(canvas, dark, light) {
 	globalCanvas.width = canvas.width;
 	globalCanvas.height = canvas.height;
 	const h = gl.drawingBufferHeight;
@@ -136,6 +155,21 @@ function fillMe(canvas) {
 	const widthLocation = gl.getUniformLocation(pid, "width");
 	const heightLocation = gl.getUniformLocation(pid, "height");
 
+	const darkRGB = hexToRgb(dark);
+	const lightRGB = hexToRgb(light);
+	const darkRedLocation = gl.getUniformLocation(pid, "dark_red");
+	const darkGreenLocation = gl.getUniformLocation(pid, "dark_green");
+	const darkBlueLocation = gl.getUniformLocation(pid, "dark_blue");
+	const lightRedLocation = gl.getUniformLocation(pid, "light_red");
+	const lightGreenLocation = gl.getUniformLocation(pid, "light_green");
+	const lightBlueLocation = gl.getUniformLocation(pid, "light_blue");
+	gl.uniform1f(darkRedLocation, darkRGB.r / 255.);
+	gl.uniform1f(darkGreenLocation, darkRGB.g / 255.);
+	gl.uniform1f(darkBlueLocation, darkRGB.b / 255.);
+	gl.uniform1f(lightRedLocation, lightRGB.r / 255.);
+	gl.uniform1f(lightGreenLocation, lightRGB.g / 255.);
+	gl.uniform1f(lightBlueLocation, lightRGB.b / 255.);
+
 	gl.viewport(0, 0, w, h);
 	gl.clearColor(0, 0, 0, 0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -150,12 +184,12 @@ function fillMe(canvas) {
 	canvas.getContext('2d').drawImage(globalCanvas, 0, 0);
 }
 
-export default function generateCloud(width, height) {
+export default function generateCloud(width, height, dark = '#cccccc', light = '#ffffff') {
 	const canvas = document.createElement('canvas');
 	canvas.width = width;
 	canvas.height = height;
 
-	fillMe(canvas);
+	fillMe(canvas, dark, light);
 
 	return canvas;
 }
