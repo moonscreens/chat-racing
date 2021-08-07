@@ -13,7 +13,6 @@ carImage1.src = carImage1Src;
 const carImage2 = new Image();
 carImage2.src = carImage2Src;
 
-
 carImage0.addEventListener('load', checkLoaded);
 carImage1.addEventListener('load', checkLoaded);
 carImage2.addEventListener('load', checkLoaded);
@@ -69,8 +68,8 @@ let lastDigit = 0;
 
 const carHorizontalVariance = config.emoteSpawnVariance / 2;
 let lastLaneChange = Date.now();
-let laneChangeSpeed = 8000;
-let laneChangeInterval = 15000;
+let laneChangeSpeed = 6000;
+let laneChangeInterval = laneChangeSpeed * 2;
 let lane = Math.random() < 0.5 ? 1 : -1;
 let position = 0;
 let nextChange = 0;
