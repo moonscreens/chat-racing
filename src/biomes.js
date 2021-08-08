@@ -6,7 +6,6 @@ const streetSignDecoration = {
     interval: 20000,
     intervalVariance: 0,
     spawnDistanceMultiplier: 0,
-    size: 10,
 }
 
 import treeUrl from './tree.png';
@@ -34,14 +33,12 @@ const biomes = {
                 interval: 200,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
-                size: 10,
             },
             {
                 imageUrl: [cactiUrl],
                 interval: 200,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
-                size: 256,
             },
             { ...streetSignDecoration },
         ],
@@ -54,11 +51,15 @@ const biomes = {
         },
         decorations: [
             {
-                imageUrl: [treeUrl, treeUrl, treeUrl, tree2Url],
+                imageUrl: [treeUrl],
                 interval: 30,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 1.5,
-                size: 200,
+            },
+            {
+                imageUrl: [tree2Url],
+                interval: 1000,
+                intervalVariance: 0,
             },
             {
                 imageUrl: [rockUrl, rock2Url, rock3Url],
@@ -66,7 +67,6 @@ const biomes = {
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
                 sequential: true,
-                size: 40,
             },
             { ...streetSignDecoration },
         ],
@@ -84,7 +84,6 @@ const biomes = {
                 side: 'left',
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 0.05,
-                size: 65,
                 sequential: true,
             },
             {
@@ -97,7 +96,6 @@ const biomes = {
                 side: 'right',
                 intervalVariance: 0.5,
                 spawnDistanceMultiplier: 1,
-                size: 10,
             },
             {
                 imageUrl: [boatUrl],
@@ -105,7 +103,6 @@ const biomes = {
                 side: 'right',
                 intervalVariance: 0.5,
                 spawnDistanceMultiplier: 1,
-                size: 50,
             }
         ],
     },
@@ -130,6 +127,8 @@ for (const key in biomes) {
         for (let o = 0; o < biome.decorations.length; o++) {
             const deco = biome.decorations[o];
             deco.index = 0;
+            deco.size = 0;
+            deco.spawnDistanceMultiplier = deco.spawnDistanceMultiplier || 1;
             deco.images = [];
             deco.canvases = [];
             deco.materials = [];
@@ -137,7 +136,6 @@ for (const key in biomes) {
             deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
             for (let index = 0; index < deco.imageUrl.length; index++) {
                 const imageUrl = deco.imageUrl[index];
-                console.log(imageUrl);
 
                 if (typeof imageUrl === 'string') deco.images[index] = new Image();
                 else deco.images[index] = imageUrl;
@@ -152,6 +150,7 @@ for (const key in biomes) {
                     //fix threejs squishing images into squares
                     deco.canvases[index].width = Math.max(deco.images[index].width, deco.images[index].height);
                     deco.canvases[index].height = deco.canvases[index].width;
+                    deco.size = deco.canvases[index].width / 3;
                     const ctx = deco.canvases[index].getContext('2d');
                     ctx.drawImage(deco.images[index], Math.round(deco.canvases[index].width / 2 - deco.images[index].width / 2), deco.canvases[index].height - deco.images[index].height);
 
