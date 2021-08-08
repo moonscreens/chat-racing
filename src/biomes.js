@@ -113,13 +113,6 @@ const biomes = {
                 intervalVariance: 0.5,
                 spawnDistanceMultiplier: 1,
             },
-            {
-                imageUrl: [boatUrl],
-                interval: 3000,
-                side: 'right',
-                intervalVariance: 0.5,
-                spawnDistanceMultiplier: 1,
-            }
         ],
     },
 }
