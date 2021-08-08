@@ -70,8 +70,8 @@ const biomes = {
             },
             {
                 imageUrl: [tallTreeUrl, tallTree2Url, tallTree3Url],
-                interval: 1000,
-                intervalVariance: 0,
+                interval: 20000,
+                intervalVariance: 0.5,
                 sequential: true,
             },
             {
@@ -165,7 +165,7 @@ for (const key in biomes) {
                     //fix threejs squishing images into squares
                     deco.canvases[index].width = Math.max(deco.images[index].width, deco.images[index].height);
                     deco.canvases[index].height = deco.canvases[index].width;
-                    deco.size = deco.canvases[index].width / 3.5;
+                    deco.size = deco.canvases[index].width / 4;
                     const ctx = deco.canvases[index].getContext('2d');
                     ctx.drawImage(deco.images[index], Math.round(deco.canvases[index].width / 2 - deco.images[index].width / 2), deco.canvases[index].height - deco.images[index].height);
 
