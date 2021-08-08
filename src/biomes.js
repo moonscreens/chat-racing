@@ -16,6 +16,11 @@ import rockUrl from './rock.png';
 import rock2Url from './rock2.png';
 import rock3Url from './rock3.png';
 import cactiUrl from './cacti.png';
+import cacti2Url from './cacti2.png';
+import cacti3Url from './cacti3.png';
+import duneUrl from './dune.png';
+import dune2Url from './dune2.png';
+import dune3Url from './dune3.png';
 import cliffUrl from './cliff.png';
 import cliff2Url from './cliff2.png';
 import cliff3Url from './cliff3.png';
@@ -33,15 +38,14 @@ const biomes = {
         },
         decorations: [
             {
-                imageUrl: [cactiUrl],
+                imageUrl: [cactiUrl, cacti2Url, cacti3Url],
                 interval: 200,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
             },
             {
-                imageUrl: [cactiUrl],
-                interval: 200,
-                intervalVariance: 0,
+                imageUrl: [duneUrl, dune3Url, dune3Url],
+                interval: 1000,
                 spawnDistanceMultiplier: 2,
             },
             { ...streetSignDecoration },
@@ -144,6 +148,7 @@ for (const key in biomes) {
             deco.index = 0;
             deco.size = 0;
             deco.spawnDistanceMultiplier = deco.spawnDistanceMultiplier || 1;
+            deco.intervalVariance = deco.intervalVariance || 1;
             deco.images = [];
             deco.canvases = [];
             deco.materials = [];
