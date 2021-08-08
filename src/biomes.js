@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 import config from './config';
-import streetsignurl from './streetsign.png';
+
+import streetsignNaMurl from './streetsign_NaM.png';
+import streetsignBorpaurl from './streetsign_borpa.png';
+
 const streetSignDecoration = {
-    imageUrl: [streetsignurl],
+    imageUrl: [streetsignNaMurl, streetsignBorpaurl],
     interval: 20000,
     intervalVariance: 0,
     spawnDistanceMultiplier: 0,
