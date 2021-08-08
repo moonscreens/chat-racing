@@ -25,7 +25,6 @@ import cliffUrl from './cliff.png';
 import cliff2Url from './cliff2.png';
 import cliff3Url from './cliff3.png';
 import seagulUrl from './seagul.png';
-import boatUrl from './boat.png';
 
 const biomes = {
     desert: {
@@ -44,7 +43,7 @@ const biomes = {
                 spawnDistanceMultiplier: 2,
             },
             {
-                imageUrl: [duneUrl, dune3Url, dune3Url],
+                imageUrl: [duneUrl, dune2Url, dune3Url],
                 interval: 1000,
                 spawnDistanceMultiplier: 2,
             },
