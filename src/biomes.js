@@ -6,8 +6,8 @@ import streetsignBorpaurl from './streetsign_borpa.png';
 
 const streetSignDecoration = {
     imageUrl: [streetsignNaMurl, streetsignBorpaurl],
-    interval: 20000,
-    intervalVariance: 0,
+    interval: 90000,
+    intervalVariance: 0.5,
     spawnDistanceMultiplier: 0,
 }
 
