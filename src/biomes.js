@@ -139,8 +139,8 @@ for (const key in biomes) {
             const deco = biome.decorations[o];
             deco.index = 0;
             deco.size = 0;
-            deco.spawnDistanceMultiplier = deco.spawnDistanceMultiplier || 1;
-            deco.intervalVariance = deco.intervalVariance || 1;
+            if (deco.spawnDistanceMultiplier === undefined) deco.spawnDistanceMultiplier = 1;
+            if (deco.intervalVariance === undefined) deco.intervalVariance = 1;
             deco.images = [];
             deco.canvases = [];
             deco.materials = [];
