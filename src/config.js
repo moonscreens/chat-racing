@@ -28,23 +28,14 @@ export default {
 		roadPaint: '#FFFFFF',
 		roadPaint2: '#373A43',
 
-		sky_blue: '#5ADBFF',
 		desert: {
 			canBeBumpy: true,
-			ground: '#EAB560',
-			ground2: '#D8A04B',
 		},
 		grass: {
 			canBeBumpy: true,
-			ground: '#699148',
-			ground2: '#7EA75B',
 		},
 		beach: {
 			canBeBumpy: false,
-			ground: '#739F45',
-			ground2: '#E8E69B',
-			ocean: '#659FDA',
-			ocean2: '#A0D2F5',
 		},
 	}
 }

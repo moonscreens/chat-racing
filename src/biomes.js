@@ -23,6 +23,8 @@ import boatUrl from './boat.png';
 const biomes = {
     desert: {
         sky: '#7EBDFC',
+        ground: '#EAB560',
+        ground2: '#D8A04B',
         clouds: {
             light: '#F8F8F8',
             dark: '#BCE0DB',
@@ -45,6 +47,8 @@ const biomes = {
     },
     grass: {
         sky: '#8BC7C8',
+        ground: '#699148',
+        ground2: '#7EA75B',
         clouds: {
             light: '#DEF7E9',
             dark: '#A9CEE5',
@@ -73,6 +77,10 @@ const biomes = {
     },
     beach: {
         sky: '#87C4F1',
+        ground: '#739F45',
+        ground2: '#E8E69B',
+        ocean: '#659FDA',
+        ocean2: '#A0D2F5',
         clouds: {
             light: '#E0ECFC',
             dark: '#9FBCE6',
