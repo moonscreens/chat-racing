@@ -6,7 +6,7 @@ const spawningPosition = -config.groundLength / 2;
 
 let roadChange = Date.now();
 const roadPresets = [
-    'straight',
+    //'straight',
     'wavy',
     'bumpy',
     'wavybumpy',
