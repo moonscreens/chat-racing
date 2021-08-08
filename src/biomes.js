@@ -9,7 +9,9 @@ const streetSignDecoration = {
 }
 
 import treeUrl from './tree.png';
-import tree2Url from './tree2.png';
+import tallTreeUrl from './tallTree.png';
+import tallTree2Url from './tallTree2.png';
+import tallTree3Url from './tallTree3.png';
 import rockUrl from './rock.png';
 import rock2Url from './rock2.png';
 import rock3Url from './rock3.png';
@@ -61,9 +63,10 @@ const biomes = {
                 spawnDistanceMultiplier: 1.5,
             },
             {
-                imageUrl: [tree2Url],
+                imageUrl: [tallTreeUrl, tallTree2Url, tallTree3Url],
                 interval: 1000,
                 intervalVariance: 0,
+                sequential: true,
             },
             {
                 imageUrl: [rockUrl, rock2Url, rock3Url],
@@ -85,6 +88,7 @@ const biomes = {
             light: '#E0ECFC',
             dark: '#9FBCE6',
         },
+        canBeBumpy: false,
         decorations: [
             {
                 imageUrl: [cliffUrl, cliff2Url, cliff3Url],
@@ -130,6 +134,9 @@ setInterval(() => {
 for (const key in biomes) {
     if (Object.hasOwnProperty.call(biomes, key)) {
         const biome = biomes[key];
+        if (biome.canBeBumpy === undefined) {
+            biome.canBeBumpy = true;
+        }
         biome.clouds.lightColor = new THREE.Color(biome.clouds.light);
         biome.clouds.darkColor = new THREE.Color(biome.clouds.dark);
         for (let o = 0; o < biome.decorations.length; o++) {

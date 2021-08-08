@@ -48,7 +48,7 @@ export function getPositionModifier() {
     }
 }
 export function getHeightModifier() {
-    if (!config.pallet[window.biome].canBeBumpy) {
+    if (!biomes[window.biome].canBeBumpy) {
         return 0;
     }
     switch (roadPresets[roadPreset]) {

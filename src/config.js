@@ -27,15 +27,5 @@ export default {
 		road2: '#424651',
 		roadPaint: '#FFFFFF',
 		roadPaint2: '#373A43',
-
-		desert: {
-			canBeBumpy: true,
-		},
-		grass: {
-			canBeBumpy: true,
-		},
-		beach: {
-			canBeBumpy: false,
-		},
 	}
 }

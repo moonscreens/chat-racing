@@ -7,7 +7,7 @@ import biomes from './biomes';
 const clouds = [];
 
 export default function (scene, tickArray) {
-	let targetColor = new THREE.Color(config.pallet[window.biome].sky);
+	let targetColor = new THREE.Color(biomes[window.biome].sky);
 	let cloudDark = biomes[window.biome].clouds.darkColor;
 	let cloudLight = biomes[window.biome].clouds.lightColor;
 
