@@ -113,7 +113,7 @@ const biomes = {
                 interval: 3000,
                 side: 'right',
                 intervalVariance: 0.5,
-                spawnDistanceMultiplier: 1,
+                spawnDistanceMultiplier: 2,
             },
         ],
     },
