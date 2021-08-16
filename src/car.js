@@ -89,7 +89,7 @@ Car.tick = (delta) => {
 
 
     Car.position.x = Car.baseX + (position * carHorizontalVariance);
-    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 4))));
+    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 3.5))));
     sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
 
     // make car bump when you hit an emote
@@ -112,16 +112,16 @@ Car.tick = (delta) => {
         lastDigit = digit;
         switch (digit) {
             case -2:
-                drawImage(carImage2, true);
+                drawImage(carImage2, false);
                 break;
             case -1:
-                drawImage(carImage1, true);
-                break;
-            case 1:
                 drawImage(carImage1, false);
                 break;
+            case 1:
+                drawImage(carImage1, true);
+                break;
             case 2:
-                drawImage(carImage2, false);
+                drawImage(carImage2, true);
                 break;
             default:
                 drawImage(carImage0, false);
