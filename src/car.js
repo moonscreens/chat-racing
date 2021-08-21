@@ -56,8 +56,8 @@ function checkLoaded() {
         sprite = new THREE.Sprite(material);
         sprite.scale.x = (width / Math.max(width, height)) * config.carSize;
         sprite.scale.y = (height / Math.max(width, height)) * config.carSize;
+        sprite.center.y = 0;
         sprite.position.y = sprite.scale.y / 2;
-        sprite.defaultY = sprite.scale.y / 2;
         Car.add(sprite);
     }
 }
