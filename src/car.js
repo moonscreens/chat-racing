@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import config from './config';
-import { easeInOutElastic } from 'js-easing-functions';
+import SimlexNoise from 'simplex-noise';
+
+const simplex = new SimplexNoise();
 
 import carImageSrc from './car.png';
 import carImage1Src from './car-turn-1.png';
 import carImage2Src from './car-turn-2.png';
+import SimplexNoise from 'simplex-noise';
 
 const carImage0 = new Image();
 carImage0.src = carImageSrc;
@@ -67,30 +70,17 @@ Car.baseX = 0;
 let lastDigit = 0;
 
 const carHorizontalVariance = config.emoteSpawnVariance / 2;
-let lastLaneChange = Date.now();
-let laneChangeSpeed = 6000;
-let laneChangeInterval = laneChangeSpeed * 2;
-let lane = Math.random() < 0.5 ? 1 : -1;
 let position = 0;
-let nextChange = 0;
 
 Car.tick = (delta) => {
     if (!sprite) return;
-    if (Date.now() - lastLaneChange > nextChange) {
-        lane *= -1;
-        lastLaneChange = Date.now();
-        nextChange = (laneChangeInterval - laneChangeSpeed) * Math.random() + laneChangeSpeed;
-    }
-    if (Date.now() - lastLaneChange < laneChangeSpeed) {
-        position = easeInOutElastic(Date.now() - lastLaneChange, lane * -1, lane * 2, laneChangeSpeed);
-    } else {
-        position = lane;
-    }
+
+    position = simplex.noise2D(0, Date.now() / 3000);
 
 
     Car.position.x = Car.baseX + (position * carHorizontalVariance);
-    const digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 3.5))));
-    sprite.position.y = sprite.defaultY + (Math.sin(Date.now() / 200) + 1) / 20;
+    let digit = Math.min(2, Math.max(-2, Math.round(Car.position.x / (config.emoteSpawnVariance / 3.5))));
+    sprite.position.y = (Math.sin(Date.now() / 200) + 1) / 20;
 
     // make car bump when you hit an emote
     let bumpProg = (Date.now() - lastBump) / bumpDuration;
@@ -107,25 +97,20 @@ Car.tick = (delta) => {
 
     sprite.position.y += Math.sin(bumpProg * Math.PI) * bumpMult * 0.5;
 
+    let flipped = true;
+    if (digit < 0) {
+        flipped = false;
+    }
+
     // turn the car based on position relative to the camera
     if (lastDigit !== digit) {
         lastDigit = digit;
-        switch (digit) {
-            case -2:
-                drawImage(carImage2, false);
-                break;
-            case -1:
-                drawImage(carImage1, false);
-                break;
-            case 1:
-                drawImage(carImage1, true);
-                break;
-            case 2:
-                drawImage(carImage2, true);
-                break;
-            default:
-                drawImage(carImage0, false);
-                break;
+        if (Math.abs(digit) >= 2) {
+            drawImage(carImage2, flipped);
+        } else if (Math.abs(digit) >= 1) {
+            drawImage(carImage1, flipped);
+        } else {
+            drawImage(carImage0, flipped);
         }
         texture.needsUpdate = true;
     }
