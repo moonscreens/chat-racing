@@ -70,7 +70,7 @@ const biomes = {
             },
             {
                 imageUrl: [tallTreeUrl, tallTree2Url, tallTree3Url],
-                interval: 20000,
+                interval: 2500,
                 intervalVariance: 0.5,
                 sequential: true,
             },
