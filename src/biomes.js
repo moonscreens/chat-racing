@@ -3,9 +3,10 @@ import config from './config';
 
 import streetsignNaMurl from './streetsign_NaM.png';
 import streetsignBorpaurl from './streetsign_borpa.png';
+import streetsignRatio from './streetsign_ratio.png';
 
 const streetSignDecoration = {
-    imageUrl: [streetsignNaMurl, streetsignBorpaurl],
+    imageUrl: [streetsignNaMurl, streetsignBorpaurl, streetsignRatio],
     interval: 90000,
     intervalVariance: 0.5,
     spawnDistanceMultiplier: 0,
