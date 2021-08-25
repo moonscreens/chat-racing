@@ -1,34 +1,12 @@
 import * as THREE from 'three';
-import config from './config';
-
-import streetsignNaMurl from './streetsign_NaM.png';
-import streetsignBorpaurl from './streetsign_borpa.png';
-import streetsignRatio from './streetsign_ratio.png';
+import config from '../config';
 
 const streetSignDecoration = {
-    imageUrl: [streetsignNaMurl, streetsignBorpaurl, streetsignRatio],
+    imageUrl: ['/sprites/streetsign_NaM.png', '/sprites/streetsign_borpa.png', '/sprites/streetsign_ratio.png'],
     interval: 90000,
     intervalVariance: 0.5,
     spawnDistanceMultiplier: 0,
 }
-
-import treeUrl from './tree.png';
-import tallTreeUrl from './tallTree.png';
-import tallTree2Url from './tallTree2.png';
-import tallTree3Url from './tallTree3.png';
-import rockUrl from './rock.png';
-import rock2Url from './rock2.png';
-import rock3Url from './rock3.png';
-import cactiUrl from './cacti.png';
-import cacti2Url from './cacti2.png';
-import cacti3Url from './cacti3.png';
-import duneUrl from './dune.png';
-import dune2Url from './dune2.png';
-import dune3Url from './dune3.png';
-import cliffUrl from './cliff.png';
-import cliff2Url from './cliff2.png';
-import cliff3Url from './cliff3.png';
-import seagulUrl from './seagul.png';
 
 const biomes = {
     desert: {
@@ -41,13 +19,13 @@ const biomes = {
         },
         decorations: [
             {
-                imageUrl: [cactiUrl, cacti2Url, cacti3Url],
+                imageUrl: ['/sprites/cacti.png', '/sprites/cacti2.png', '/sprites/cacti3.png'],
                 interval: 200,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
             },
             {
-                imageUrl: [duneUrl, dune2Url, dune3Url],
+                imageUrl: ['/sprites/dune.png', '/sprites/dune2.png', '/sprites/dune3.png'],
                 interval: 1000,
                 spawnDistanceMultiplier: 2,
             },
@@ -64,19 +42,19 @@ const biomes = {
         },
         decorations: [
             {
-                imageUrl: [treeUrl],
+                imageUrl: ['/sprites/tree.png'],
                 interval: 30,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 1.5,
             },
             {
-                imageUrl: [tallTreeUrl, tallTree2Url, tallTree3Url],
+                imageUrl: ['/sprites/tallTree.png', '/sprites/tallTree2.png', '/sprites/tallTree3.png'],
                 interval: 2500,
                 intervalVariance: 0.5,
                 sequential: true,
             },
             {
-                imageUrl: [rockUrl, rock2Url, rock3Url],
+                imageUrl: ['/sprites/rock.png', '/sprites/rock2.png', '/sprites/rock3.png'],
                 interval: 50,
                 intervalVariance: 0,
                 spawnDistanceMultiplier: 2,
@@ -98,7 +76,7 @@ const biomes = {
         canBeBumpy: false,
         decorations: [
             {
-                imageUrl: [cliffUrl, cliff2Url, cliff3Url],
+                imageUrl: ['/sprites/cliff.png', '/sprites/cliff2.png', '/sprites/cliff3.png'],
                 interval: 200,
                 side: 'left',
                 intervalVariance: 0,
@@ -110,7 +88,7 @@ const biomes = {
                 ...streetSignDecoration
             },
             {
-                imageUrl: [seagulUrl],
+                imageUrl: ['/sprites/seagul.png'],
                 interval: 3000,
                 side: 'right',
                 intervalVariance: 0.5,

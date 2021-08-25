@@ -4,17 +4,14 @@ import SimlexNoise from 'simplex-noise';
 
 const simplex = new SimplexNoise();
 
-import carImageSrc from './car.png';
-import carImage1Src from './car-turn-1.png';
-import carImage2Src from './car-turn-2.png';
 import SimplexNoise from 'simplex-noise';
 
 const carImage0 = new Image();
-carImage0.src = carImageSrc;
+carImage0.src = '/sprites/car.png';
 const carImage1 = new Image();
-carImage1.src = carImage1Src;
+carImage1.src = '/sprites/car-turn-1.png';
 const carImage2 = new Image();
-carImage2.src = carImage2Src;
+carImage2.src = '/sprites/car-turn-2.png';
 
 carImage0.addEventListener('load', checkLoaded);
 carImage1.addEventListener('load', checkLoaded);
