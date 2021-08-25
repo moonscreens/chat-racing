@@ -214,7 +214,7 @@ function draw() {
 	if (stats) stats.end();
 }
 
-//window.biome = 'grass';
+//window.biome = 'forestBiome';
 if (window.biome === undefined) {
 	window.biome = Object.keys(biomes)[Math.floor(Math.random() * Object.keys(biomes).length)];
 }
