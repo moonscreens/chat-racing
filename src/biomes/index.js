@@ -1,101 +1,14 @@
 import * as THREE from 'three';
 import config from '../config';
 
-const streetSignDecoration = {
-    imageUrl: ['/sprites/streetsign_NaM.png', '/sprites/streetsign_borpa.png', '/sprites/streetsign_ratio.png'],
-    interval: 90000,
-    intervalVariance: 0.5,
-    spawnDistanceMultiplier: 0,
-}
+import desertBiome from './desert.js';
+import forestBiome from './forest.js';
+import beachBiome from './beach.js';
 
 const biomes = {
-    desert: {
-        sky: '#7EBDFC',
-        ground: '#EAB560',
-        ground2: '#D8A04B',
-        clouds: {
-            light: '#F8F8F8',
-            dark: '#BCE0DB',
-        },
-        decorations: [
-            {
-                imageUrl: ['/sprites/cacti.png', '/sprites/cacti2.png', '/sprites/cacti3.png'],
-                interval: 200,
-                intervalVariance: 0,
-                spawnDistanceMultiplier: 2,
-            },
-            {
-                imageUrl: ['/sprites/dune.png', '/sprites/dune2.png', '/sprites/dune3.png'],
-                interval: 1000,
-                spawnDistanceMultiplier: 2,
-            },
-            { ...streetSignDecoration },
-        ],
-    },
-    grass: {
-        sky: '#8BC7C8',
-        ground: '#699148',
-        ground2: '#7EA75B',
-        clouds: {
-            light: '#DEF7E9',
-            dark: '#A9CEE5',
-        },
-        decorations: [
-            {
-                imageUrl: ['/sprites/tree.png'],
-                interval: 30,
-                intervalVariance: 0,
-                spawnDistanceMultiplier: 1.5,
-            },
-            {
-                imageUrl: ['/sprites/tallTree.png', '/sprites/tallTree2.png', '/sprites/tallTree3.png'],
-                interval: 2500,
-                intervalVariance: 0.5,
-                sequential: true,
-            },
-            {
-                imageUrl: ['/sprites/rock.png', '/sprites/rock2.png', '/sprites/rock3.png'],
-                interval: 50,
-                intervalVariance: 0,
-                spawnDistanceMultiplier: 2,
-                sequential: true,
-            },
-            { ...streetSignDecoration },
-        ],
-    },
-    beach: {
-        sky: '#87C4F1',
-        ground: '#739F45',
-        ground2: '#E8E69B',
-        ocean: '#659FDA',
-        ocean2: '#A0D2F5',
-        clouds: {
-            light: '#E0ECFC',
-            dark: '#9FBCE6',
-        },
-        canBeBumpy: false,
-        decorations: [
-            {
-                imageUrl: ['/sprites/cliff.png', '/sprites/cliff2.png', '/sprites/cliff3.png'],
-                interval: 200,
-                side: 'left',
-                intervalVariance: 0,
-                spawnDistanceMultiplier: 0.05,
-                sequential: true,
-            },
-            {
-                side: 'right',
-                ...streetSignDecoration
-            },
-            {
-                imageUrl: ['/sprites/seagul.png'],
-                interval: 3000,
-                side: 'right',
-                intervalVariance: 0.5,
-                spawnDistanceMultiplier: 2,
-            },
-        ],
-    },
+    desertBiome,
+    forestBiome,
+    beachBiome,
 }
 
 setInterval(() => {
