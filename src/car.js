@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import config from './config';
-import SimlexNoise from 'simplex-noise';
+import SimplexNoise from 'simplex-noise';
 
 const simplex = new SimplexNoise();
 
-import SimplexNoise from 'simplex-noise';
 
 const carImage0 = new Image();
 carImage0.src = '/sprites/car.png';
