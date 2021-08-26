@@ -36,11 +36,12 @@ for (const key in biomes) {
             deco.size = 0;
             if (deco.spawnDistanceMultiplier === undefined) deco.spawnDistanceMultiplier = 1;
             if (deco.intervalVariance === undefined) deco.intervalVariance = 1;
+            if (deco.offset === undefined) deco.offset = 0;
             deco.images = [];
             deco.canvases = [];
             deco.materials = [];
             deco.textures = [];
-            deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
+            if (deco.lastSpawn === undefined) deco.lastSpawn = Date.now() + Math.random() * deco.intervalVariance;
             for (let index = 0; index < deco.imageUrl.length; index++) {
                 const imageUrl = deco.imageUrl[index];
 
