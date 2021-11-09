@@ -1,7 +1,7 @@
 import './main.css'
 import * as THREE from 'three';
 import Stats from 'stats-js';
-import Chat from 'twitch-chat-emotes';
+import TwitchChat from "twitch-chat-emotes-threejs";
 
 import { groundInit, getPositionModifier, getHeightModifier } from './ground';
 import { Car } from './car';
@@ -17,14 +17,20 @@ if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
 }
 
-const ChatInstance = new Chat({
+const ChatInstance = new TwitchChat({
+	// If using planes, consider using MeshBasicMaterial instead of SpriteMaterial
+	materialType: THREE.SpriteMaterial,
+
+	// Passed to material options
+	materialOptions: {
+		transparent: true,
+	},
+
 	channels,
 	maximumEmoteLimit: 2,
 	duplicateEmoteLimit: 0,
 })
 
-const emoteTextures = {};
-const emoteMaterials = {};
 const pendingEmoteArray = [];
 const emotes = [];
 window.biome = undefined;
@@ -74,23 +80,11 @@ function init() {
 	groundInit(scene, tickArray);
 
 
-	ChatInstance.on("emotes", (emotes) => {
+	ChatInstance.listen((emotes) => {
 		const output = [];
 		for (let index = 0; index < emotes.length; index++) {
 			const emote = emotes[index];
-
-			if (!emoteTextures[emote.gif.id]) {
-				emoteTextures[emote.gif.id] = new THREE.CanvasTexture(emote.gif.canvas);
-				emoteTextures[emote.gif.id].magFilter = THREE.NearestFilter;
-				emoteTextures[emote.gif.id].minFilter = THREE.NearestFilter;
-
-				emoteMaterials[emote.gif.id] = new THREE.SpriteMaterial({
-					map: emoteTextures[emote.gif.id],
-				});
-			}
-			emote.texture = emoteTextures[emote.gif.id];
-
-			output.push(new THREE.Sprite(emoteMaterials[emote.gif.id]));
+			output.push(new THREE.Sprite(emote.material));
 		}
 		pendingEmoteArray.push(output);
 	});
@@ -127,13 +121,6 @@ function draw() {
 
 	for (let index = 0; index < tickArray.length; index++) {
 		tickArray[index](delta);
-	}
-
-	for (const key in emoteMaterials) {
-		if (Object.hasOwnProperty.call(emoteMaterials, key)) {
-			emoteMaterials[key].needsUpdate = true;
-			emoteTextures[key].needsUpdate = true;
-		}
 	}
 
 	for (let index = emotes.length - 1; index >= 0; index--) {
