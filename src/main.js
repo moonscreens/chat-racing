@@ -186,15 +186,18 @@ function draw() {
 				deco.index++;
 				if (deco.index >= deco.materials.length) deco.index = 0;
 			}
-			const sprite = new THREE.Sprite(mat);
-			sprite.center.y = 0;
-			group.add(sprite);
+
 			let x = Math.random() > 0.5 ? 1 : -1;
 			if (deco.side === 'left') x = -1;
 			if (deco.side === 'right') x = 1;
 
+			if (deco.flip && x === -1 && mat.flipped) mat = mat.flipped;
+			const sprite = new THREE.Sprite(mat);
+			sprite.center.y = 0;
+			group.add(sprite);
+
 			group.scale.setScalar(deco.size);
-			group.position.x += (25 + deco.size / 2) * x + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier;
+			group.position.x += (25 + deco.size / 2) * x + (Math.random() * config.emoteSpawnVariance * 10 * x) * deco.spawnDistanceMultiplier + (deco.offset * x);
 			scene.add(group);
 		}
 	}
@@ -203,7 +206,6 @@ function draw() {
 	if (stats) stats.end();
 }
 
-//window.biome = 'forestBiome';
 if (window.biome === undefined) {
 	window.biome = Object.keys(biomes)[Math.floor(Math.random() * Object.keys(biomes).length)];
 }
