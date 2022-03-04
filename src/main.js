@@ -178,7 +178,7 @@ function draw() {
 		const deco = biomes[window.biome].decorations[index];
 
 		if (Date.now() - deco.lastSpawn > deco.interval) {
-			deco.lastSpawn = Date.now();
+			deco.lastSpawn = Date.now() + ((Math.random() * deco.intervalVariance*2) - deco.intervalVariance);
 			const group = createGroup();
 			let mat = deco.materials[Math.floor(Math.random() * deco.materials.length)];
 			if (deco.sequential) {
