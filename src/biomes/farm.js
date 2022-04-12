@@ -87,7 +87,7 @@ const biome = {
 			side: 'right',
         },
 		{
-            imageUrl: ['/sprites/farm/tree2.png'],
+            imageUrl: ['/sprites/farm/tree.png'],
             interval: 1000,
             intervalVariance: 100,
             spawnDistanceMultiplier: 2,
@@ -98,14 +98,6 @@ const biome = {
             imageUrl: ['/sprites/farm/grasslands1.png'],
             interval: 33,
             intervalVariance: 5,
-            spawnDistanceMultiplier: 2,
-			offset: 10,
-			side: 'right',
-        },
-		{
-            imageUrl: ['/sprites/farm/tree2Apple.png'],
-            interval: 2000,
-            intervalVariance: 100,
             spawnDistanceMultiplier: 2,
 			offset: 10,
 			side: 'right',
