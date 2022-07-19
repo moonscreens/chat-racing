@@ -139,7 +139,7 @@ export function generateSlice(scene, index) {
     const texture = new THREE.CanvasTexture(canvas);
     texture.magFilter = THREE.NearestFilter;
     texture.minFilter = THREE.NearestFilter;
-    texture.format = THREE.RGBFormat;
+    texture.format = THREE.RGBAFormat;
 
     const ground_material = new THREE.MeshBasicMaterial({
         side: THREE.FrontSide,
