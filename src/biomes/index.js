@@ -5,12 +5,14 @@ import desertBiome from './desert.js';
 import forestBiome from './forest.js';
 import cityBiome from './city.js';
 import beachBiome from './beach.js';
+import farmBiome from './farm.js';
 
 const biomes = {
 	desertBiome,
 	forestBiome,
 	cityBiome,
 	beachBiome,
+	farmBiome
 }
 
 setInterval(() => {
