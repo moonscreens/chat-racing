@@ -3344,10 +3344,10 @@ terser@^5.10.0, terser@^5.7.2:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
-three@^0.142.0:
-  version "0.142.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.142.0.tgz#89e226a16221f212eb1d40f0786604b711f28aed"
-  integrity sha512-ESjPO+3geFr+ZUfVMpMnF/eVU2uJPOh0e2ZpMFqjNca1wApS9lJb7E4MjwGIczgt9iuKd8PEm6Pfgp2bJ92Xtg==
+three@^0.143.0:
+  version "0.143.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.143.0.tgz#1455bca132cc2b20beb7f41d313e10c29e5ed9df"
+  integrity sha512-oKcAGYHhJ46TGEuHjodo2n6TY2R6lbvrkp+feKZxqsUL/WkH7GKKaeu6RHeyb2Xjfk2dPLRKLsOP0KM2VgT8Zg==
 
 thunky@^1.0.2:
   version "1.1.0"
@@ -3409,17 +3409,17 @@ tslib@^2.0.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
-twitch-chat-emotes-threejs@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/twitch-chat-emotes-threejs/-/twitch-chat-emotes-threejs-0.3.6.tgz#78f98f0caf70cf8b4ffce5f4579de11391618873"
-  integrity sha512-ZC5fQskf5aEDtdqN8YY9zWePJl1iu5hkGSOlv07231dmYx/XprInwMMD0pUL3e2YaM+O0KVPG7W/CkUGlXR+Ew==
+twitch-chat-emotes-threejs@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/twitch-chat-emotes-threejs/-/twitch-chat-emotes-threejs-0.3.9.tgz#146a248c8fa2f71f68c4b2828fae26703c6006f8"
+  integrity sha512-QZzMiTfd1aWB1mqIGgakmzpesOdzz4CReAaQfBx7qv/kd8p9rMc6vK8b7IKA3157rj8SBLcrhsCST4DwpUnYOw==
   dependencies:
-    twitch-chat-emotes "^0.2.5"
+    twitch-chat-emotes "^0.2.6"
 
-twitch-chat-emotes@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/twitch-chat-emotes/-/twitch-chat-emotes-0.2.5.tgz#672df5c592153b8ce36ce480272ca94f944b14fd"
-  integrity sha512-Rio2g5g1tJyBSIvkGHtQZ+cFm9pszF6t6jUj77pQKxX7+8Tx9H8IohfDawTR/hX7TZhYYczdcg3xtl5+e2RtQA==
+twitch-chat-emotes@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/twitch-chat-emotes/-/twitch-chat-emotes-0.2.6.tgz#c68d5f4363c57cc904d2f452b138f29a85a3c950"
+  integrity sha512-g7xJ2rQ6mmfop1GwuIS/jgunVHCIT+Ud0SBRfLn25KBizkM0FKPN2CRl+jTtCKCKrmBSh/roWmjcJ53M2JxQmA==
   dependencies:
     tmi.js "^1.8.5"
 
