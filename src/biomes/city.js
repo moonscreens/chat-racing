@@ -23,7 +23,7 @@ const biome = {
 			intervalVariance: 0,
 			spawnDistanceMultiplier: 1.5,
 			offset: 30,
-		},		{
+		}, {
 			imageUrl: ['/sprites/city/billding1.png', '/sprites/city/billding2.png', '/sprites/city/billding3.png', '/sprites/city/billding4.png', '/sprites/city/billding5.png', '/sprites/city/billding6.png'],
 			interval: 350,
 			flip: true,
