@@ -16,6 +16,8 @@ const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, func
 if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
 }
+window.biome = query_vars.biome;
+console.log(query_vars)
 
 const ChatInstance = new TwitchChat({
 	THREE,
@@ -35,7 +37,6 @@ const ChatInstance = new TwitchChat({
 
 const pendingEmoteArray = [];
 const emotes = [];
-window.biome = undefined;
 
 import initScene from './scene';
 
@@ -178,7 +179,7 @@ function draw() {
 		const deco = biomes[window.biome].decorations[index];
 
 		if (Date.now() - deco.lastSpawn > deco.interval) {
-			deco.lastSpawn = Date.now() + ((Math.random() * deco.intervalVariance*2) - deco.intervalVariance);
+			deco.lastSpawn = Date.now() + ((Math.random() * deco.intervalVariance * 2) - deco.intervalVariance);
 			const group = createGroup();
 			let mat = deco.materials[Math.floor(Math.random() * deco.materials.length)];
 			if (deco.sequential) {
@@ -209,5 +210,4 @@ function draw() {
 if (window.biome === undefined) {
 	window.biome = Object.keys(biomes)[Math.floor(Math.random() * Object.keys(biomes).length)];
 }
-
 window.addEventListener('load', init);

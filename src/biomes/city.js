@@ -1,9 +1,11 @@
 import streetSignDecoration from './streetsigns.js';
+import config from '../config.js';
 
 const biome = {
-    sky: '#8BC7C8',
+    sky: '#759aff',
     ground: '#767D8E',
     ground2: '#626877',
+	sideWalkColor: '#9095a3',
     clouds: {
         light: '#DEF7E9',
         dark: '#A9CEE5',
@@ -18,8 +20,16 @@ const biome = {
 			offset: 30,
         },
         {
+            imageUrl: ['/sprites/city/billding1.png', '/sprites/city/billding2.png', '/sprites/city/billding3.png', '/sprites/city/billding4.png', '/sprites/city/building1.png', '/sprites/city/building2.png', '/sprites/city/building3.png', '/sprites/city/building4.png', '/sprites/city/building5.png', '/sprites/city/building6.png'],
+            interval: 100,
+			flip: true,
+            intervalVariance: 0,
+            spawnDistanceMultiplier: 1.25,
+			offset: 190,
+        },
+        {
             imageUrl: ['/sprites/city/lcar1.png', '/sprites/city/lcar2.png', '/sprites/city/lcar3.png'],
-            interval: 300,
+            interval: 700,
             side: 'left',
             spawnDistanceMultiplier: 0,
 			offset: -25,
@@ -27,7 +37,7 @@ const biome = {
         },
         {
             imageUrl: ['/sprites/city/rcar1.png', '/sprites/city/rcar2.png', '/sprites/city/rcar3.png'],
-            interval: 300,
+            interval: 700,
             side: 'right',
             spawnDistanceMultiplier: 0,
 			offset: -25,
@@ -69,6 +79,9 @@ biome.drawRoad = (canvas, ctx, x, w, index) => {
     for (let index = 0; index < canvas.width; index++) {
         if (Math.random() > 0.9) ctx.fillRect(index, 0, 1, canvas.height);
     }
+
+	ctx.fillStyle = biome.sideWalkColor;
+	ctx.fillRect(canvas.width/2 - config.roadPxWidth*0.75, 0, config.roadPxWidth * 1.5, 1);
 }
 
 export default biome;
