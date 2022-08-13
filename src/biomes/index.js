@@ -6,6 +6,7 @@ import forestBiome from './forest.js';
 import cityBiome from './city.js';
 import beachBiome from './beach.js';
 import farmBiome from './farm.js';
+import { NearestFilter } from 'three';
 
 const biomes = {
 	desertBiome,
@@ -53,7 +54,9 @@ for (const key in biomes) {
 				else deco.images[index] = imageUrl;
 
 				deco.canvases[index] = document.createElement('canvas');
-				deco.textures[index] = new THREE.CanvasTexture(deco.canvases[index], undefined, undefined, undefined, THREE.NearestFilter, THREE.NearestFilter);
+				deco.textures[index] = new THREE.CanvasTexture(deco.canvases[index]);
+				deco.textures[index].magFilter = deco.magFilter || NearestFilter;
+				deco.textures[index].minFilter = deco.minFilter || NearestFilter;
 				deco.materials[index] = new THREE.SpriteMaterial({
 					map: deco.textures[index],
 				});
