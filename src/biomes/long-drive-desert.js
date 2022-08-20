@@ -8,6 +8,7 @@ const biome = {
 	clouds: {
 		light: '#F8F8F8',
 		dark: '#BCE0DB',
+		frequency: 0.1,
 	},
 	decorations: [
 		{
