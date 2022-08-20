@@ -13,21 +13,22 @@ const biome = {
 	decorations: [
 		{
 			imageUrl: [
-				'/sprites/longdrive/rock1.png',
-				'/sprites/longdrive/rock2.png',
-				'/sprites/longdrive/rock1.png',
-				'/sprites/longdrive/rock2.png',
 				'/sprites/longdrive/car1.png',
 				'/sprites/longdrive/car2.png',
 				'/sprites/longdrive/car3.png',
 				'/sprites/longdrive/car4.png',
 				'/sprites/longdrive/tower.png',
-				'/sprites/longdrive/tower.png',
-				'/sprites/longdrive/rockformation.png',
+				'/sprites/longdrive/rock1.png',
+				'/sprites/longdrive/rock1.png',
+				'/sprites/longdrive/rock1.png',
+				'/sprites/longdrive/rock2.png',
+				'/sprites/longdrive/rock2.png',
+				'/sprites/longdrive/rock2.png',
 				'/sprites/longdrive/rockformation.png',
 			],
 			interval: 2500,
 			intervalVariance: 1.5,
+			flipRandom: true,
 			spawnDistanceMultiplier: 3,
 		},
 		{
@@ -54,7 +55,7 @@ const biome = {
 			interval: 2000,
 			intervalVariance: 1,
 			offset: -80,
-			spawnDistanceMultiplier:0.5,
+			spawnDistanceMultiplier: 0.5,
 		},
 		{ ...streetSignDecoration },
 	],
@@ -85,7 +86,7 @@ biome.customRoad = (canvas, ctx, x, w, index) => {
 
 
 	if (Math.round(index / 5) % 2 > 0) {
-		ctx.fillStyle = '#BCAC9C';
+		ctx.fillStyle = '#d1bf6f';
 		ctx.fillRect(x + Math.round(w / 2), 0, 1, canvas.height);
 	}
 }

@@ -197,6 +197,7 @@ function draw() {
 			if (deco.side === 'right') x = 1;
 
 			if (deco.flip && x === -1 && mat.flipped) mat = mat.flipped;
+			if (deco.flipRandom && mat.flipped && Math.random() > 0.5) mat = mat.flipped;
 			const sprite = new THREE.Sprite(mat);
 			sprite.center.y = 0;
 			group.add(sprite);
