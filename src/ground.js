@@ -108,25 +108,30 @@ function drawRoad(canvas, ctx, index) {
 	ctx.fillStyle = '#FF0000';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	biomes[window.biome].drawRoad(canvas, ctx, x, w, index);
+	biomes[window.biome].drawGround(canvas, ctx, x, w, index);
 
-
-
-	ctx.fillStyle = config.pallet.road;
-	if (Math.round(index / 5) % 2 > 0) {
-		ctx.fillStyle = config.pallet.road2;
-	}
-	ctx.fillRect(x, 0, w, canvas.height);
-
-
-	ctx.fillStyle = config.pallet.roadPaint;
-	if (Math.round(index / 5) % 2 > 0) {
-		ctx.fillStyle = config.pallet.roadPaint2;
+	if (biomes[window.biome].customRoad) {
+		biomes[window.biome].customRoad(canvas, ctx, x, w, index);
 	} else {
-		ctx.fillRect(x + Math.round(w / 2 - config.roadPaintWidth / 2), 0, config.roadPaintWidth, canvas.height);
+		ctx.fillStyle = config.pallet.road;
+		if (Math.round(index / 5) % 2 > 0) {
+			ctx.fillStyle = config.pallet.road2;
+		}
+		ctx.fillRect(x, 0, w, canvas.height);
+
+
+		ctx.fillStyle = config.pallet.roadPaint;
+		if (Math.round(index / 5) % 2 > 0) {
+			ctx.fillStyle = config.pallet.roadPaint2;
+		} else {
+			ctx.fillRect(x + Math.round(w / 2 - config.roadPaintWidth / 2), 0, config.roadPaintWidth, canvas.height);
+		}
+		ctx.fillRect(x, 0, config.roadPaintWidth, canvas.height);
+		ctx.fillRect(x + w - config.roadPaintWidth, 0, config.roadPaintWidth, canvas.height);
 	}
-	ctx.fillRect(x, 0, config.roadPaintWidth, canvas.height);
-	ctx.fillRect(x + w - config.roadPaintWidth, 0, config.roadPaintWidth, canvas.height);
+
+
+
 }
 
 export function generateSlice(scene, index) {

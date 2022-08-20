@@ -6,6 +6,7 @@ import forestBiome from './forest.js';
 import cityBiome from './city.js';
 import beachBiome from './beach.js';
 import farmBiome from './farm.js';
+import longDriveDesert from './long-drive-desert.js';
 import { NearestFilter } from 'three';
 
 const biomes = {
@@ -13,7 +14,8 @@ const biomes = {
 	forestBiome,
 	cityBiome,
 	beachBiome,
-	farmBiome
+	farmBiome,
+	longDriveDesert
 }
 
 setInterval(() => {

@@ -34,7 +34,7 @@ const biome = {
 	],
 };
 
-biome.drawRoad = (canvas, ctx, x, w, index) => {
+biome.drawGround = (canvas, ctx, x, w, index) => {
 	// draw the far side sand textures
 	ctx.fillStyle = biome.ground;
 	ctx.fillRect(0, 0, Math.floor(canvas.width / 2), canvas.height);

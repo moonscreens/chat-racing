@@ -24,7 +24,7 @@ const biome = {
 	],
 };
 
-biome.drawRoad = (canvas, ctx, x, w, index) => {
+biome.drawGround = (canvas, ctx, x, w, index) => {
 	// draw the ground
 	ctx.fillStyle = biome.ground;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);

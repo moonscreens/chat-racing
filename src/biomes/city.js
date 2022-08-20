@@ -24,7 +24,7 @@ const biome = {
 			spawnDistanceMultiplier: 1.5,
 			offset: 30,
 		}, {
-			imageUrl: ['/sprites/city/billding1.png', '/sprites/city/billding2.png', '/sprites/city/billding3.png', '/sprites/city/billding4.png', '/sprites/city/billding5.png', '/sprites/city/billding6.png'],
+			imageUrl: ['/sprites/city/billding1.png', '/sprites/city/billding2.png', '/sprites/city/billding3.png', '/sprites/city/billding4.png'],
 			interval: 350,
 			flip: true,
 			side: 'left',
@@ -77,7 +77,7 @@ const biome = {
 	],
 };
 
-biome.drawRoad = (canvas, ctx, x, w, index) => {
+biome.drawGround = (canvas, ctx, x, w, index) => {
 	// draw the ground
 	ctx.fillStyle = biome.ground;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
