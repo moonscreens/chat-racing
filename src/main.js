@@ -117,7 +117,7 @@ let fastFrames = 0;
 function draw() {
 	if (stats) stats.begin();
 
-	let delta = (Date.now() - lastFrame) / 1000;
+	let delta = Math.min(1, (Date.now() - lastFrame) / 1000);
 	lastFrame = Date.now();
 
 	if (fastFrames < 600) {
