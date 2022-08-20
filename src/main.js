@@ -19,6 +19,10 @@ if (query_vars.channels) {
 window.biome = query_vars.biome;
 console.log(query_vars)
 
+if (query_vars.biomeLock === 'true') {
+	window.biomeLock = true;
+}
+
 const ChatInstance = new TwitchChat({
 	THREE,
 

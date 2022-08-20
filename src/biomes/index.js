@@ -20,6 +20,7 @@ const biomes = {
 
 setInterval(() => {
 	///change to random biome
+	if (window.biomeLock) return;
 	const keys = Object.keys(biomes);
 	let lastBiome = window.biome;
 	while (window.biome === lastBiome) {
