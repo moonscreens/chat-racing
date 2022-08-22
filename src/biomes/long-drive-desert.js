@@ -55,7 +55,6 @@ const biome = {
 			imageUrl: [
 				'/sprites/longdrive/brush.png',
 				'/sprites/longdrive/stone.png',
-				'/sprites/longdrive/stone2.png',
 			],
 			interval: 2000,
 			intervalVariance: 1,
