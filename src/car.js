@@ -1,16 +1,17 @@
 import * as THREE from 'three';
 import config from './config';
 import SimplexNoise from 'simplex-noise';
+import query_vars from './query_vars';
 
 const simplex = new SimplexNoise();
 
 
 const carImage0 = new Image();
-carImage0.src = '/sprites/car.png';
+carImage0.src = window.isLongDrive ? '/sprites/longdrive/car/car.png' : '/sprites/car.png';
 const carImage1 = new Image();
-carImage1.src = '/sprites/car-turn-1.png';
+carImage1.src = window.isLongDrive ? '/sprites/longdrive/car/car-turn-L1.png' : '/sprites/car-turn-1.png';
 const carImage2 = new Image();
-carImage2.src = '/sprites/car-turn-2.png';
+carImage2.src = window.isLongDrive ? '/sprites/longdrive/car/car-turn-L2.png' : '/sprites/car-turn-2.png';
 
 carImage0.addEventListener('load', checkLoaded);
 carImage1.addEventListener('load', checkLoaded);

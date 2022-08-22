@@ -8,16 +8,12 @@ import { Car } from './car';
 import config from './config';
 import biomes from './biomes';
 
+import query_vars from './query_vars';
+
 let channels = ['moonmoon'];
-const query_vars = {};
-const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-	query_vars[key] = value;
-});
 if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
 }
-window.biome = query_vars.biome;
-console.log(query_vars)
 
 if (query_vars.biomeLock === 'true') {
 	window.biomeLock = true;
